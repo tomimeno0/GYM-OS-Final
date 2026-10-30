@@ -24,7 +24,7 @@ app.get("/api/salud", async (req, res) => {
     await sequelize.authenticate();
     res.json({
       estado: "ok",
-      version: "75",
+      version: "100",
     });
   } catch (error) {
     res.status(503).json({
@@ -33,13 +33,14 @@ app.get("/api/salud", async (req, res) => {
   }
 });
 app.use("/api", require("./routes/usuarios.routes"));
+app.use("/api/admin", require("./routes/admin.routes"));
 app.use("/api", require("./routes/gimnasio.routes"));
 app.use("/api", (req, res) =>
   res.status(404).json({
     message: "Ruta no encontrada.",
   }),
 );
-const dist = path.join(__dirname, "client", "dist");
+const dist = path.join(__dirname, "..", "client", "dist");
 if (fs.existsSync(path.join(dist, "index.html"))) {
   app.use(express.static(dist));
   app.get("/{*ruta}", (req, res) =>
@@ -73,9 +74,9 @@ async function iniciar() {
     throw new Error("Configurá JWT_SECRET y ENCRYPTION_KEY en .env.");
   }
   await sequelize.authenticate();
-  const puerto = Number(process.env.PORT || 5175);
+  const puerto = Number(process.env.PORT || 5176);
   app.listen(puerto, "::1", () =>
-    console.log("GYM-OS 75: http://localhost:" + puerto),
+    console.log("GYM-OS 100: http://localhost:" + puerto),
   );
   app.listen(puerto, "127.0.0.1");
 }

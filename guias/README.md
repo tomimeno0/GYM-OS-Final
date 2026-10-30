@@ -1,70 +1,79 @@
-# Reparto del próximo avance · referencia de alcance 75
+# Las nueve guías · entrega final
 
-Actualizado el 26/10/2026. El nombre del repositorio se conserva. El objetivo es un avance similar para los nueve, no llegar a un porcentaje fijo de aplicación. El 50 % queda congelado como referencia; no se reescribe el pasado.
+Continúan los módulos del 75 % y se distribuye el cierre por recorridos/endpoints. Paulo tiene asignado explícitamente el frontend de Objetivos. Las responsabilidades no se presentan como declaraciones de autoría de código ya existente.
 
-**Estado: tareas de revisión, implementación y defensa pendientes de cada integrante.** La cobertura estimada que aparece abajo NO demuestra aportes realizados ni autoría. El código del incremento ya existe como referencia; cada uno debe entender, revisar y verificar su recorrido antes de marcarlo terminado.
+| Integrante | Módulo principal del cierre | Paquete de revisión y defensa |
+| --- | --- | --- |
+| [Gianluca Pizarro](01-gianluca-pizarro.md) | Cuentas, login y recuperación | 1 de 9 |
+| [Tomás Menossi](02-tomas-menossi.md) | Inteligencia artificial y generación de planes | 1 de 9 |
+| [Iván Lerner](03-ivan-lerner.md) | Entrenamientos, creación de dietas y altas administrativas | 1 de 9 |
+| [Paulo López Stanley](04-paulo-lopez.md) | Objetivos y su frontend completo | 1 de 9 |
+| [Gade Silva y Lápiz](05-gade-silva-y-lapiz.md) | Medidas, consumos y habilitación de cuentas | 1 de 9 |
+| [Valentín Sued (Sueco)](06-valentin-schueld.md) | Rutinas manuales y gestión de dietas | 1 de 9 |
+| [Mateo Romani](07-mateo-romani.md) | Progreso, macros y registro de actividad | 1 de 9 |
+| [Joaquín Casanou](08-joaquin-casanou.md) | Catálogo y adaptación de planes con IA | 1 de 9 |
+| [Simón Castellani](09-simon-castellani.md) | Perfil, contraseñas y definición de roles | 1 de 9 |
 
-Se conservan las responsabilidades de base del 50 % y se añaden tareas concretas a todos. Las rutas completas siguen siendo método + `/api/...`. Cada endpoint tiene un responsable principal; los helpers compartidos se coordinan sin inventar rutas nuevas.
+Cada paquete abarca interfaz, endpoint, datos, validaciones, un caso correcto, uno inválido y uno de autorización/cancelación. Se reparte un bloque completo a cada persona; no se asigna a nadie 0 ni se entrega a una sola persona la mitad de la aplicación. No se puede concluir esfuerzo o autoría por contar endpoints o líneas. Si el ensayo muestra una diferencia de carga, se comparte la revisión dentro del módulo, sin inventar commits ni inflar código.
 
-| Integrante | Avance nuevo principal | Cobertura prevista del código del incremento |
-| --- | --- | ---: |
-| [Gianluca Pizarro](01-gianluca-pizarro.md) | Alimentos, validación nutricional y eliminación de consumos | 11.01 % |
-| [Tomás Menossi](02-tomas-menossi.md) | Generación de rutinas con IA | 9.28 % |
-| [Iván Lerner](03-ivan-lerner.md) | Creación de dietas | 11.90 % |
-| [Paulo López](04-paulo-lopez.md) | Edición de dietas | 13.04 % |
-| [Gade Silva y Lápiz](05-gade-silva-y-lapiz.md) | Registro de consumos y agregado de alimentos | 10.06 % |
-| [Valentín Schueld (Sueco)](06-valentin-schueld.md) | Consulta/baja de dietas y editor de comidas | 12.81 % |
-| [Mateo Romani](07-mateo-romani.md) | Resumen diario, macros y metas nutricionales | 11.82 % |
-| [Joaquín Casanou](08-joaquin-casanou.md) | Adaptación de rutinas con IA | 9.46 % |
-| [Simón Castellani](09-simon-castellani.md) | Edición de consumos y alimentos | 10.62 % |
-| **Total previsto** | **Nueve paquetes pendientes** | **100,00 %** |
+La fracción organizativa de cada paquete es **1/9 (11,111… %)**; las nueve suman exactamente 100 %. Es una cuota acordada de responsabilidad, no una medición de cuánto programó realmente cada alumno.
 
-## Propiedad de los 39 endpoints
+## Responsables por endpoint
 
-| Método y ruta | Responsable principal |
+| Método y ruta | Responsable |
 | --- | --- |
+| `DELETE /api/admin/roles/:id` | [Valentín Sued (Sueco)](06-valentin-schueld.md) |
+| `DELETE /api/admin/usuarios/:id` | [Simón Castellani](09-simon-castellani.md) |
 | `DELETE /api/consumos/:id` | [Gianluca Pizarro](01-gianluca-pizarro.md) |
 | `DELETE /api/cuenta` | [Simón Castellani](09-simon-castellani.md) |
-| `DELETE /api/dietas/:id` | [Valentín Schueld (Sueco)](06-valentin-schueld.md) |
-| `DELETE /api/objetivos/:id` | [Paulo López](04-paulo-lopez.md) |
-| `DELETE /api/rutinas/:id` | [Valentín Schueld (Sueco)](06-valentin-schueld.md) |
+| `DELETE /api/dietas/:id` | [Valentín Sued (Sueco)](06-valentin-schueld.md) |
+| `DELETE /api/objetivos/:id` | [Paulo López Stanley](04-paulo-lopez.md) |
+| `DELETE /api/rutinas/:id` | [Valentín Sued (Sueco)](06-valentin-schueld.md) |
+| `GET /api/admin/bitacora` | [Mateo Romani](07-mateo-romani.md) |
+| `GET /api/admin/roles` | [Joaquín Casanou](08-joaquin-casanou.md) |
+| `GET /api/admin/usuarios` | [Iván Lerner](03-ivan-lerner.md) |
 | `GET /api/consumos` | [Mateo Romani](07-mateo-romani.md) |
 | `GET /api/cuenta` | [Simón Castellani](09-simon-castellani.md) |
-| `GET /api/dietas` | [Valentín Schueld (Sueco)](06-valentin-schueld.md) |
+| `GET /api/dietas` | [Valentín Sued (Sueco)](06-valentin-schueld.md) |
 | `GET /api/ejercicios` | [Joaquín Casanou](08-joaquin-casanou.md) |
 | `GET /api/entrenamientos` | [Iván Lerner](03-ivan-lerner.md) |
 | `GET /api/ia/conversaciones` | [Tomás Menossi](02-tomas-menossi.md) |
 | `GET /api/ia/conversaciones/:id` | [Tomás Menossi](02-tomas-menossi.md) |
 | `GET /api/ia/estado` | [Tomás Menossi](02-tomas-menossi.md) |
 | `GET /api/mediciones` | [Gade Silva y Lápiz](05-gade-silva-y-lapiz.md) |
-| `GET /api/objetivos` | [Paulo López](04-paulo-lopez.md) |
+| `GET /api/objetivos` | [Paulo López Stanley](04-paulo-lopez.md) |
 | `GET /api/progreso` | [Mateo Romani](07-mateo-romani.md) |
 | `GET /api/rutinas` | [Joaquín Casanou](08-joaquin-casanou.md) |
 | `GET /api/salud` | [Gianluca Pizarro](01-gianluca-pizarro.md) |
+| `PATCH /api/admin/usuarios/:id/estado` | [Gade Silva y Lápiz](05-gade-silva-y-lapiz.md) |
+| `POST /api/admin/roles` | [Simón Castellani](09-simon-castellani.md) |
+| `POST /api/admin/usuarios` | [Iván Lerner](03-ivan-lerner.md) |
 | `POST /api/consumos` | [Gade Silva y Lápiz](05-gade-silva-y-lapiz.md) |
 | `POST /api/dietas` | [Iván Lerner](03-ivan-lerner.md) |
 | `POST /api/entrenamientos` | [Iván Lerner](03-ivan-lerner.md) |
 | `POST /api/ia/consulta` | [Tomás Menossi](02-tomas-menossi.md) |
+| `POST /api/ia/dietas` | [Tomás Menossi](02-tomas-menossi.md) |
+| `POST /api/ia/dietas/:id/adaptar` | [Joaquín Casanou](08-joaquin-casanou.md) |
 | `POST /api/ia/rutinas` | [Tomás Menossi](02-tomas-menossi.md) |
 | `POST /api/ia/rutinas/:id/adaptar` | [Joaquín Casanou](08-joaquin-casanou.md) |
 | `POST /api/login` | [Gianluca Pizarro](01-gianluca-pizarro.md) |
 | `POST /api/logout` | [Gianluca Pizarro](01-gianluca-pizarro.md) |
 | `POST /api/mediciones` | [Gade Silva y Lápiz](05-gade-silva-y-lapiz.md) |
 | `POST /api/mediciones/initial` | [Gade Silva y Lápiz](05-gade-silva-y-lapiz.md) |
-| `POST /api/objetivos` | [Paulo López](04-paulo-lopez.md) |
-| `POST /api/objetivos/:id/completar` | [Paulo López](04-paulo-lopez.md) |
+| `POST /api/objetivos` | [Paulo López Stanley](04-paulo-lopez.md) |
+| `POST /api/objetivos/:id/completar` | [Paulo López Stanley](04-paulo-lopez.md) |
+| `POST /api/recuperar-password` | [Gianluca Pizarro](01-gianluca-pizarro.md) |
 | `POST /api/registro` | [Gianluca Pizarro](01-gianluca-pizarro.md) |
-| `POST /api/rutinas` | [Valentín Schueld (Sueco)](06-valentin-schueld.md) |
+| `POST /api/restablecer-password` | [Gianluca Pizarro](01-gianluca-pizarro.md) |
+| `POST /api/rutinas` | [Valentín Sued (Sueco)](06-valentin-schueld.md) |
+| `PUT /api/admin/roles/:id` | [Simón Castellani](09-simon-castellani.md) |
+| `PUT /api/admin/usuarios/:id` | [Paulo López Stanley](04-paulo-lopez.md) |
+| `PUT /api/admin/usuarios/:id/roles` | [Gade Silva y Lápiz](05-gade-silva-y-lapiz.md) |
 | `PUT /api/consumos/:id` | [Simón Castellani](09-simon-castellani.md) |
 | `PUT /api/cuenta` | [Simón Castellani](09-simon-castellani.md) |
-| `PUT /api/dietas/:id` | [Paulo López](04-paulo-lopez.md) |
+| `PUT /api/cuenta/password` | [Simón Castellani](09-simon-castellani.md) |
+| `PUT /api/dietas/:id` | [Paulo López Stanley](04-paulo-lopez.md) |
 | `PUT /api/entrenamientos/:id` | [Iván Lerner](03-ivan-lerner.md) |
-| `PUT /api/rutinas/:id` | [Valentín Schueld (Sueco)](06-valentin-schueld.md) |
+| `PUT /api/rutinas/:id` | [Valentín Sued (Sueco)](06-valentin-schueld.md) |
 
-La ampliación suma diez endpoints repartidos entre los nueve: ocho de nutrición y dos de IA. Tener una sola ruta nueva no significa una tarea pequeña: se incluyen pantalla, validaciones, datos, errores y comprobación. Tomás conserva el chat y la creación con IA; Joaquín toma adaptación. Valentín conserva la escritura de rutinas; Mateo conserva progreso. La cantidad de rutas por persona no es una medida de esfuerzo.
-
-[Plan y cobertura por archivo](../docs/PLAN.md). Los informes anteriores describen el reparto anterior y no se sobrescriben para simular otra historia.
-
-### Ampliación: recuperación de contraseña
-
-Gianluca incorpora `POST /api/recuperar-password` y `POST /api/restablecer-password`. Su [guía individual](01-gianluca-pizarro.md#recuperación-de-contraseña--ampliación-solicitada) explica formularios, controlador, modelo, SMTP, pruebas y diagrama. Los porcentajes anteriores no incluyen esta ampliación.
+Total: 53 endpoints. Cada uno tiene un responsable principal. Los helpers compartidos se explican en las guías de quienes los utilizan. [Conceptos comunes](../docs/BASE-COMUN.md) · [Manual](../docs/MANUAL-USUARIO.md) · [Requisitos](../docs/REQUISITOS-ENTREGA.md).

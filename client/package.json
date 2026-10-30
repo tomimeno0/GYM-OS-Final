@@ -1,10 +1,10 @@
 {
-  "name": "gym-os-75-client",
-  "version": "0.75.0",
+  "name": "gym-os-final-client",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --host localhost --port 5176 --strictPort",
+    "dev": "vite --host localhost --port 5177 --strictPort",
     "build": "vite build"
   },
   "dependencies": {

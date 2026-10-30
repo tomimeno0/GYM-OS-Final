@@ -1,42 +1,44 @@
-# Paulo López · próximo avance
+# Paulo López Stanley · guía de la entrega final
 
-**Tarea nueva:** Edición de dietas.
+**Responsabilidad:** Objetivos y su frontend completo.
 
-**Estado: pendiente de trabajo y verificación individual.** No es una declaración de que ya lo programaste. Se conserva tu responsabilidad de base del 50 % y se añade un recorrido concreto del incremento.
+Se te asigna expresamente el frontend completo de Objetivos (Objetivos.jsx), además de sus endpoints y la edición de dietas que ya conservabas. Sumás la edición de datos de usuarios en Administración. Esta asignación no certifica quién escribió cada línea en el pasado.
 
-## Qué tenés que hacer ahora
+Este documento asigna estudio, revisión y defensa. No certifica autoría pasada. Antes de exponer, completá las comprobaciones de tu recorrido.
 
-Recuperar un plan existente, modificarlo y guardarlo con PUT sin crear otro id. Revisar con Iván el handler compartido y con Simón la copia de listas. Demostrar que una edición inválida conserva lo anterior.
+## Primero: base común que puede preguntar el profesor
 
-## Mapa de tu avance
+Leé [BASE-COMUN.md](../docs/BASE-COMUN.md). Son conceptos breves que todos deben entender: carpetas, login, Bcrypt, JWT, middleware, CORS, useState y useEffect. El PDF permite preguntas sobre código de compañeros; no hay garantía de que limite la defensa a este módulo. El detalle profundo que sigue es tu parte.
+
+## Mapa de tu módulo
 
 ```mermaid
-flowchart LR
-  U["Formulario o acción: Edición de dietas"]
-  U --> E0["PUT /api/dietas/:id"]
-  E0 --> H0["actualizarDieta"]
-  H0 --> R["Validación, MySQL o Cohere y respuesta"]
-  R --> C["Mostrar resultado y comprobarlo"]
+flowchart TD
+  A["Objetivos.jsx: formulario o acción"] --> B["Axios: /api/objetivos"]
+  B --> C["Express: sesión y permiso cuando corresponde"]
+  C --> D["objetivos.controller.js: validar y consultar"]
+  D --> E["Sequelize y MySQL; proveedor cuando corresponde"]
+  E --> F["Respuesta HTTP y estado React"]
 ```
 
 ## Tus endpoints y continuidad
 
 | Etapa | Método y ruta | Handler real |
 | --- | --- | --- |
-| Base del 50 % | `GET /api/objetivos` | [visuaizarObjetivo](../controllers/objetivos.controller.js#L4) |
-| Base del 50 % | `POST /api/objetivos` | [definirObjeto](../controllers/objetivos.controller.js#L27) |
-| Base del 50 % | `POST /api/objetivos/:id/completar` | [marcarCompletado](../controllers/objetivos.controller.js#L206) |
-| Base del 50 % | `DELETE /api/objetivos/:id` | [eliminarObjetivo](../controllers/objetivos.controller.js#L246) |
-| Avance nuevo | `PUT /api/dietas/:id` | [actualizarDieta](../controllers/nutricion.controller.js#L146) |
+| Base del 50 % | `GET /api/objetivos` | [visuaizarObjetivo](../backend/controllers/objetivos.controller.js#L4) |
+| Base del 50 % | `POST /api/objetivos` | [definirObjeto](../backend/controllers/objetivos.controller.js#L27) |
+| Base del 50 % | `POST /api/objetivos/:id/completar` | [marcarCompletado](../backend/controllers/objetivos.controller.js#L206) |
+| Base del 50 % | `DELETE /api/objetivos/:id` | [eliminarObjetivo](../backend/controllers/objetivos.controller.js#L246) |
+| Avance nuevo | `PUT /api/dietas/:id` | [actualizarDieta](../backend/controllers/nutricion.controller.js#L152) |
 
 ## Funciones concretas del avance
 
 | Función | Qué parte recorrés |
 | --- | --- |
-| [actualizarDieta](../controllers/nutricion.controller.js#L146) | Tu rama principal busca la dieta propia por id y reemplaza cabecera/detalles dentro de una transacción. |
-| [editar](../client/src/pages/Nutricion.jsx#L188) | Tu rama carga una dieta existente. |
-| [copiarComidas](../client/src/pages/Nutricion.jsx#L179) | Revisión compartida con Simón de la copia de listas, sin mutar el original. |
-| [guardar](../client/src/pages/Nutricion.jsx#L130) | Tu recorrido usa PUT /dietas/:id con editando. |
+| [actualizarDieta](../backend/controllers/nutricion.controller.js#L152) | Tu rama principal busca la dieta propia por id y reemplaza cabecera/detalles dentro de una transacción. |
+| [editar](../client/src/pages/Nutricion.jsx) | Tu rama carga una dieta existente. |
+| [copiarComidas](../client/src/pages/Nutricion.jsx) | Revisión compartida con Simón de la copia de listas, sin mutar el original. |
+| [guardar](../client/src/pages/Nutricion.jsx) | Tu recorrido usa PUT /dietas/:id con editando. |
 
 Los helpers son funciones internas, no endpoints adicionales. Si una función sirve a POST y PUT o a generación y adaptación, se revisa entre los dos responsables. No hay que duplicarla ni separarla artificialmente para aparentar más código.
 
@@ -122,24 +124,40 @@ Los helpers son funciones internas, no endpoints adicionales. Si una función si
 
 **Cómo mostrarlo.** Cambiar horario y cantidad, guardar y explicar que los consumos previos conservan sus valores.
 
-## Cuándo está terminado tu bloque
 
-- [ ] Editar dieta conserva id y reemplaza correctamente sus detalles.
-- [ ] Un id ajeno o inexistente se rechaza.
-- [ ] Un fallo en el segundo detalle mantiene la versión anterior completa.
-- [ ] Explicar el recorrido desde el input hasta la respuesta, sin leer el código palabra por palabra.
-- [ ] Registrar qué revisión, cambio o comprobación hiciste realmente; si hay commit, usar la identidad real.
+## Lo que se agrega en el cierre
 
-## Tamaño previsto y trabajo compartido
+En `Objetivos.jsx`, `cargar` llama GET /objetivos, y useEffect lo ejecuta al montar. `guardar` evita recargar la página con preventDefault, convierte valores numéricos y envía POST; `cambiar` prepara la confirmación y luego completa por POST o elimina por DELETE. `datos` contiene el formulario, `items` el historial, `ocupado` bloquea botones y `aviso` muestra respuestas. `unidad` depende del tipo de objetivo. `hayObjetivoActivo` impide ofrecer una segunda meta activa; la base también tiene usuario_activo único. Los inputs controlados usan value/onChange y setDatos con una copia explícita para no perder campos. `.map()` solo construye elementos JSX con key; el backend conserva for e if. `editarUsuario` en backend permite nombre, apellido y correo, sin aceptar roles ni contraseña por ese endpoint. El frontend del panel reutiliza el formulario con editando; PUT conserva el id.
 
-Como referencia, este paquete cubre **13.04 %** de las 1.702 líneas nuevas/reemplazadas del incremento medido. Es cobertura asignada para revisar/trabajar, no un porcentaje de programación ya hecho. No mide dificultad ni tiempo y se reajusta si al trabajar aparece una diferencia de carga.
+### Rutas nuevas que defendés
 
-[Plan y límites del cálculo](../docs/PLAN.md). La meta es cerca de 11 % por persona, con margen; el alcance de entrega puede quedar por encima o por debajo del nombre histórico 75. No se inflan líneas ni se atribuye código intacto como una mejora.
+| Método y ruta | Función | Archivo |
+| --- | --- | --- |
+| `PUT /api/admin/usuarios/:id` | `editarUsuario` | [admin.controller.js](../backend/controllers/admin.controller.js) |
 
-## Lectura del código
+## Preguntas de defensa con respuesta orientativa
 
-Pantalla React → ruta Express → controlador → Sequelize → MySQL. req.params trae el id; req.query, filtros; req.body, JSON; req.user, la cuenta autenticada. Las consultas deben restringir el propietario. Axios envía pedidos desde React y el JSON recibido está en respuesta.data. Un 204 no tiene JSON.
+**¿Qué diferencia hay entre useState y useEffect?** useState conserva formulario/listado/avisos entre renderizados. useEffect ejecuta la carga de datos al montar; no guarda datos en MySQL.
 
-El backend usa for tradicional, if/else, async/await y try/catch. En JSX, map dibuja listas. Las transacciones con commit/rollback evitan guardados parciales; el cifrado, hash y sesión conservan cuentas y datos existentes. La clave de Cohere permanece en el servidor. No se reintroducen los temas retirados ni capas de servicios.
+**¿Por qué Number antes de POST?** Los inputs entregan strings; el backend exige números reales. El frontend ayuda y el servidor vuelve a validar.
 
-[Criterio del profesor y diferencias conservadas](../docs/CRITERIO-DEL-PROFESOR.md).
+**¿Por qué confirmar antes de completar o borrar?** Confirmar inicia la escritura; cancelar cierra el diálogo sin enviar la petición que cambia datos. El backend exige confirmar:true.
+
+## Práctica equivalente para los nueve
+
+- [ ] Recorrer una acción desde el componente hasta MySQL y volver con la respuesta.
+- [ ] Mostrar un caso correcto con datos de prueba y persistencia comprobada.
+- [ ] Mostrar un caso de datos inválidos y explicar el código HTTP.
+- [ ] Mostrar un caso de autorización, cancelación o estado no permitido; no debe cambiar información.
+- [ ] Explicar el formulario, las funciones principales, las librerías y el diagrama sin leer código palabra por palabra.
+- [ ] Hacer una modificación pequeña y explicar el resultado (por ejemplo un texto, un límite válido o un campo).
+
+## Ensayo individual de 15–20 minutos
+
+2 minutos: ubicar backend/client y tu componente. 5 minutos: seguir una petición propia. 4 minutos: explicar modelo y validaciones. 4 minutos: demostrar éxito/error/cancelación. 3 minutos: responder las preguntas anteriores y los conceptos comunes. No memorizar respuestas sobre funciones que no revisaste.
+
+## Archivos compartidos y continuidad
+
+`backend/index.js` monta las rutas y sirve React; `backend/config/db.js` conecta Sequelize; `backend/models/index.js` relaciona modelos; `client/src/App.jsx` decide navegación y sesión. La base de estos archivos se revisa entre todos. Compartir un archivo no significa que cada persona deba defender todas sus ramas internas: ubicá tu método y seguí sus llamadas.
+
+El reparto final sustituye las estimaciones de carga del corte 75. Cada integrante tiene un paquete completo y la misma lista de comprobaciones; no son porcentajes medidos de autoría ni horas reales.

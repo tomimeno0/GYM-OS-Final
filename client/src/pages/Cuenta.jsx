@@ -1,3 +1,4 @@
+import CambiarPassword from "./CambiarPassword";
 import Confirmar from "../components/Confirmar";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -148,8 +149,8 @@ export default function Cuenta({ usuario, setUsuario }) {
             checked={datos.consentimiento_ia}
             onChange={cambiar}
           />
-          Autorizo enviar a Cohere mis consultas y, al generar rutinas, medidas,
-          objetivo y resumen de entrenamientos.
+          Autorizo enviar a Cohere mis consultas y, al generar rutinas o dietas,
+          medidas, objetivo y resumen de entrenamientos.
         </label>
         <p className="muted">
           La IA usa un proveedor externo. No envíes datos sensibles
@@ -158,6 +159,7 @@ export default function Cuenta({ usuario, setUsuario }) {
         </p>
         <button disabled={ocupado}>Guardar perfil</button>
       </form>
+      <CambiarPassword setUsuario={setUsuario} />
       <form className="tarjeta peligro" onSubmit={eliminar}>
         <h2>Eliminar cuenta</h2>
         <p>Esta acción borra tus datos y no se puede deshacer.</p>

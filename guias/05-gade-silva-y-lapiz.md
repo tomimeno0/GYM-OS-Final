@@ -1,41 +1,43 @@
-# Gade Silva y Lápiz · próximo avance
+# Gade Silva y Lápiz · guía de la entrega final
 
-**Tarea nueva:** Registro de consumos y agregado de alimentos.
+**Responsabilidad:** Medidas, consumos y habilitación de cuentas.
 
-**Estado: pendiente de trabajo y verificación individual.** No es una declaración de que ya lo programaste. Se conserva tu responsabilidad de base del 50 % y se añade un recorrido concreto del incremento.
+Conservás medidas y alta de consumos/alimentos. Sumás bloqueo/activación y reemplazo de roles por usuario, comprobando revocación de sesiones y protección del último administrador.
 
-## Qué tenés que hacer ahora
+Este documento asigna estudio, revisión y defensa. No certifica autoría pasada. Antes de exponer, completá las comprobaciones de tu recorrido.
 
-Registrar lo realmente comido, manejar fecha/hora y agregar alimentos desde el editor común. Comprobar que cambiar gramos cambia el resultado. Revisar el detalle de comida guardado con Valentín, sin sumar planes como consumo.
+## Primero: base común que puede preguntar el profesor
 
-## Mapa de tu avance
+Leé [BASE-COMUN.md](../docs/BASE-COMUN.md). Son conceptos breves que todos deben entender: carpetas, login, Bcrypt, JWT, middleware, CORS, useState y useEffect. El PDF permite preguntas sobre código de compañeros; no hay garantía de que limite la defensa a este módulo. El detalle profundo que sigue es tu parte.
+
+## Mapa de tu módulo
 
 ```mermaid
-flowchart LR
-  U["Formulario o acción: Registro de consumos y agregado de alimentos"]
-  U --> E0["POST /api/consumos"]
-  E0 --> H0["registrarComida"]
-  H0 --> R["Validación, MySQL o Cohere y respuesta"]
-  R --> C["Mostrar resultado y comprobarlo"]
+flowchart TD
+  A["Medidas.jsx: formulario o acción"] --> B["Axios: /api/admin/usuarios/:id/estado"]
+  B --> C["Express: sesión y permiso cuando corresponde"]
+  C --> D["admin.controller.js: validar y consultar"]
+  D --> E["Sequelize y MySQL; proveedor cuando corresponde"]
+  E --> F["Respuesta HTTP y estado React"]
 ```
 
 ## Tus endpoints y continuidad
 
 | Etapa | Método y ruta | Handler real |
 | --- | --- | --- |
-| Base del 50 % | `GET /api/mediciones` | [listarMediciones](../controllers/mediciones.controller.js#L204) |
-| Base del 50 % | `POST /api/mediciones/initial` | [actualizarMedicion](../controllers/mediciones.controller.js#L55) |
-| Base del 50 % | `POST /api/mediciones` | [actualizarMedicion](../controllers/mediciones.controller.js#L55) |
-| Avance nuevo | `POST /api/consumos` | [registrarComida](../controllers/nutricion.controller.js#L340) |
+| Base del 50 % | `GET /api/mediciones` | [listarMediciones](../backend/controllers/mediciones.controller.js#L204) |
+| Base del 50 % | `POST /api/mediciones/initial` | [actualizarMedicion](../backend/controllers/mediciones.controller.js#L55) |
+| Base del 50 % | `POST /api/mediciones` | [actualizarMedicion](../backend/controllers/mediciones.controller.js#L55) |
+| Avance nuevo | `POST /api/consumos` | [registrarComida](../backend/controllers/nutricion.controller.js#L370) |
 
 ## Funciones concretas del avance
 
 | Función | Qué parte recorrés |
 | --- | --- |
-| [registrarComida](../controllers/nutricion.controller.js#L340) | Tu rama crea un consumo sin id y recalcula nutrientes. |
-| [copiarAlimento](../client/src/pages/Nutricion.jsx#L72) | Copia explícita de los campos de un alimento. |
-| [agregarAlimento](../client/src/pages/Nutricion.jsx#L270) | Agrega un alimento al editor común. |
-| [actualizarComida](../controllers/nutricion.controller.js#L96) | Revisión conjunta con Valentín: la misma comida validada se persiste como detalle de dieta. |
+| [registrarComida](../backend/controllers/nutricion.controller.js#L370) | Tu rama crea un consumo sin id y recalcula nutrientes. |
+| [copiarAlimento](../client/src/pages/Nutricion.jsx) | Copia explícita de los campos de un alimento. |
+| [agregarAlimento](../client/src/pages/Nutricion.jsx) | Agrega un alimento al editor común. |
+| [actualizarComida](../backend/controllers/nutricion.controller.js#L102) | Revisión conjunta con Valentín: la misma comida validada se persiste como detalle de dieta. |
 
 Los helpers son funciones internas, no endpoints adicionales. Si una función sirve a POST y PUT o a generación y adaptación, se revisa entre los dos responsables. No hay que duplicarla ni separarla artificialmente para aparentar más código.
 
@@ -105,24 +107,41 @@ Los helpers son funciones internas, no endpoints adicionales. Si una función si
 
 **Cómo mostrarlo.** Ingresar 50 g de un alimento de 400 kcal/100 g y comprobar que registra 200 kcal.
 
-## Cuándo está terminado tu bloque
 
-- [ ] 50 g a 400 kcal/100 g produce 200 kcal.
-- [ ] Agregar un alimento conserva los valores del anterior.
-- [ ] La fecha futura se rechaza; el día consultado respeta zona horaria.
-- [ ] Explicar el recorrido desde el input hasta la respuesta, sin leer el código palabra por palabra.
-- [ ] Registrar qué revisión, cambio o comprobación hiciste realmente; si hay commit, usar la identidad real.
+## Lo que se agrega en el cierre
 
-## Tamaño previsto y trabajo compartido
+`activarUsuario` y `bloquearUsuario` fijan el estado del recorrido y llaman `cambiarEstado`; este exige confirmar, busca la cuenta, protege el último administrador activo y actualiza bajo transacción. Al bloquear elimina Sesion, por eso el JWT anterior deja de servir aunque aún no haya vencido. `asignarRoles` comprueba ids válidos y no repetidos, bloquea el rol Administrador para serializar cambios, exige que quede un admin activo, reemplaza UsuarioRol y revoca sesiones. `cambiarEstado` no crea usuarios ni restaura una cuenta borrada. Las validaciones físicas y de alimentos conservan los límites del 75 %.
 
-Como referencia, este paquete cubre **10.06 %** de las 1.702 líneas nuevas/reemplazadas del incremento medido. Es cobertura asignada para revisar/trabajar, no un porcentaje de programación ya hecho. No mide dificultad ni tiempo y se reajusta si al trabajar aparece una diferencia de carga.
+### Rutas nuevas que defendés
 
-[Plan y límites del cálculo](../docs/PLAN.md). La meta es cerca de 11 % por persona, con margen; el alcance de entrega puede quedar por encima o por debajo del nombre histórico 75. No se inflan líneas ni se atribuye código intacto como una mejora.
+| Método y ruta | Función | Archivo |
+| --- | --- | --- |
+| `PATCH /api/admin/usuarios/:id/estado` | `activarUsuario` | [admin.controller.js](../backend/controllers/admin.controller.js) |
+| `PUT /api/admin/usuarios/:id/roles` | `asignarRoles` | [admin.controller.js](../backend/controllers/admin.controller.js) |
 
-## Lectura del código
+## Preguntas de defensa con respuesta orientativa
 
-Pantalla React → ruta Express → controlador → Sequelize → MySQL. req.params trae el id; req.query, filtros; req.body, JSON; req.user, la cuenta autenticada. Las consultas deben restringir el propietario. Axios envía pedidos desde React y el JSON recibido está en respuesta.data. Un 204 no tiene JSON.
+**¿Bloquear elimina datos?** No. Cambia estado a bloqueado y revoca sesiones; activar vuelve a habilitar el login.
 
-El backend usa for tradicional, if/else, async/await y try/catch. En JSX, map dibuja listas. Las transacciones con commit/rollback evitan guardados parciales; el cifrado, hash y sesión conservan cuentas y datos existentes. La clave de Cohere permanece en el servidor. No se reintroducen los temas retirados ni capas de servicios.
+**¿Por qué el estado no se valida solo en React?** Se puede llamar la API sin la pantalla. El middleware y controlador deben comprobar autorización y datos.
 
-[Criterio del profesor y diferencias conservadas](../docs/CRITERIO-DEL-PROFESOR.md).
+**¿Qué impide quitar el último admin?** Una transacción bloquea el rol del sistema y comprueba cuántos administradores activos quedan antes de modificarlo.
+
+## Práctica equivalente para los nueve
+
+- [ ] Recorrer una acción desde el componente hasta MySQL y volver con la respuesta.
+- [ ] Mostrar un caso correcto con datos de prueba y persistencia comprobada.
+- [ ] Mostrar un caso de datos inválidos y explicar el código HTTP.
+- [ ] Mostrar un caso de autorización, cancelación o estado no permitido; no debe cambiar información.
+- [ ] Explicar el formulario, las funciones principales, las librerías y el diagrama sin leer código palabra por palabra.
+- [ ] Hacer una modificación pequeña y explicar el resultado (por ejemplo un texto, un límite válido o un campo).
+
+## Ensayo individual de 15–20 minutos
+
+2 minutos: ubicar backend/client y tu componente. 5 minutos: seguir una petición propia. 4 minutos: explicar modelo y validaciones. 4 minutos: demostrar éxito/error/cancelación. 3 minutos: responder las preguntas anteriores y los conceptos comunes. No memorizar respuestas sobre funciones que no revisaste.
+
+## Archivos compartidos y continuidad
+
+`backend/index.js` monta las rutas y sirve React; `backend/config/db.js` conecta Sequelize; `backend/models/index.js` relaciona modelos; `client/src/App.jsx` decide navegación y sesión. La base de estos archivos se revisa entre todos. Compartir un archivo no significa que cada persona deba defender todas sus ramas internas: ubicá tu método y seguí sus llamadas.
+
+El reparto final sustituye las estimaciones de carga del corte 75. Cada integrante tiene un paquete completo y la misma lista de comprobaciones; no son porcentajes medidos de autoría ni horas reales.

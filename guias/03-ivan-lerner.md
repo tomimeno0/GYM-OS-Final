@@ -1,39 +1,41 @@
-# Iván Lerner · próximo avance
+# Iván Lerner · guía de la entrega final
 
-**Tarea nueva:** Creación de dietas.
+**Responsabilidad:** Entrenamientos, creación de dietas y altas administrativas.
 
-**Estado: pendiente de trabajo y verificación individual.** No es una declaración de que ya lo programaste. Se conserva tu responsabilidad de base del 50 % y se añade un recorrido concreto del incremento.
+Conservás entrenamientos e ingreso manual de dietas. Sumás el listado/buscador y alta de usuarios del panel, sin cambiar la sesión del administrador.
 
-## Qué tenés que hacer ahora
+Este documento asigna estudio, revisión y defensa. No certifica autoría pasada. Antes de exponer, completá las comprobaciones de tu recorrido.
 
-Recorrer el formulario de plan nuevo, su POST, el objetivo propio y el guardado de cabecera y comidas. Coordinar los campos del plan con Paulo y el editor de comidas con Valentín.
+## Primero: base común que puede preguntar el profesor
 
-## Mapa de tu avance
+Leé [BASE-COMUN.md](../docs/BASE-COMUN.md). Son conceptos breves que todos deben entender: carpetas, login, Bcrypt, JWT, middleware, CORS, useState y useEffect. El PDF permite preguntas sobre código de compañeros; no hay garantía de que limite la defensa a este módulo. El detalle profundo que sigue es tu parte.
+
+## Mapa de tu módulo
 
 ```mermaid
-flowchart LR
-  U["Formulario o acción: Creación de dietas"]
-  U --> E0["POST /api/dietas"]
-  E0 --> H0["actualizarDieta"]
-  H0 --> R["Validación, MySQL o Cohere y respuesta"]
-  R --> C["Mostrar resultado y comprobarlo"]
+flowchart TD
+  A["Administracion.jsx: formulario o acción"] --> B["Axios: /api/admin/usuarios"]
+  B --> C["Express: sesión y permiso cuando corresponde"]
+  C --> D["admin.controller.js: validar y consultar"]
+  D --> E["Sequelize y MySQL; proveedor cuando corresponde"]
+  E --> F["Respuesta HTTP y estado React"]
 ```
 
 ## Tus endpoints y continuidad
 
 | Etapa | Método y ruta | Handler real |
 | --- | --- | --- |
-| Base del 50 % | `GET /api/entrenamientos` | [listarEntrenamientos](../controllers/entrenamientos.controller.js#L8) |
-| Base del 50 % | `POST /api/entrenamientos` | [iniciarEntrenamiento](../controllers/entrenamientos.controller.js#L39) |
-| Base del 50 % | `PUT /api/entrenamientos/:id` | [actualizarRegistro](../controllers/entrenamientos.controller.js#L140) |
-| Avance nuevo | `POST /api/dietas` | [actualizarDieta](../controllers/nutricion.controller.js#L146) |
+| Base del 50 % | `GET /api/entrenamientos` | [listarEntrenamientos](../backend/controllers/entrenamientos.controller.js#L8) |
+| Base del 50 % | `POST /api/entrenamientos` | [iniciarEntrenamiento](../backend/controllers/entrenamientos.controller.js#L39) |
+| Base del 50 % | `PUT /api/entrenamientos/:id` | [actualizarRegistro](../backend/controllers/entrenamientos.controller.js#L140) |
+| Avance nuevo | `POST /api/dietas` | [actualizarDieta](../backend/controllers/nutricion.controller.js#L152) |
 
 ## Funciones concretas del avance
 
 | Función | Qué parte recorrés |
 | --- | --- |
-| [actualizarDieta](../controllers/nutricion.controller.js#L146) | Tu rama principal es crear sin req.params.id. Las validaciones generales y la transacción se revisan con Paulo. |
-| [guardar](../client/src/pages/Nutricion.jsx#L130) | Tu recorrido termina en POST /dietas sin editando; no incluye consumos. |
+| [actualizarDieta](../backend/controllers/nutricion.controller.js#L152) | Tu rama principal es crear sin req.params.id. Las validaciones generales y la transacción se revisan con Paulo. |
+| [guardar](../client/src/pages/Nutricion.jsx) | Tu recorrido termina en POST /dietas sin editando; no incluye consumos. |
 
 Los helpers son funciones internas, no endpoints adicionales. Si una función sirve a POST y PUT o a generación y adaptación, se revisa entre los dos responsables. No hay que duplicarla ni separarla artificialmente para aparentar más código.
 
@@ -103,24 +105,41 @@ Los helpers son funciones internas, no endpoints adicionales. Si una función si
 
 **Cómo mostrarlo.** Crear un plan con desayuno y un alimento; mostrar que no suma automáticamente al consumo del día.
 
-## Cuándo está terminado tu bloque
 
-- [ ] Crear dieta con al menos dos comidas y comprobar detalles.
-- [ ] Rechazar objetivo ajeno y calorías objetivo no enteras.
-- [ ] Un fallo en un detalle revierte toda la creación.
-- [ ] Explicar el recorrido desde el input hasta la respuesta, sin leer el código palabra por palabra.
-- [ ] Registrar qué revisión, cambio o comprobación hiciste realmente; si hay commit, usar la identidad real.
+## Lo que se agrega en el cierre
 
-## Tamaño previsto y trabajo compartido
+`listarUsuarios`: toma q acotado, construye condiciones LIKE, incluye roles, limita a 200 resultados y proyecta datos públicos. No devuelve hashes ni teléfonos. `crearUsuario`: valida datos, bcrypt y transacción para Usuario/UsuarioRol/bitácora; no llama a abrirSesion ni reemplaza la cookie del administrador. `guardarUsuario` en Administración hace POST cuando no hay editando; luego refresca la lista y limpia los campos. Continuás sabiendo explicar `iniciarEntrenamiento` y `actualizarRegistro`: se copia la rutina a registros propios y las ediciones futuras no reescriben el historial.
 
-Como referencia, este paquete cubre **11.90 %** de las 1.702 líneas nuevas/reemplazadas del incremento medido. Es cobertura asignada para revisar/trabajar, no un porcentaje de programación ya hecho. No mide dificultad ni tiempo y se reajusta si al trabajar aparece una diferencia de carga.
+### Rutas nuevas que defendés
 
-[Plan y límites del cálculo](../docs/PLAN.md). La meta es cerca de 11 % por persona, con margen; el alcance de entrega puede quedar por encima o por debajo del nombre histórico 75. No se inflan líneas ni se atribuye código intacto como una mejora.
+| Método y ruta | Función | Archivo |
+| --- | --- | --- |
+| `GET /api/admin/usuarios` | `listarUsuarios` | [admin.controller.js](../backend/controllers/admin.controller.js) |
+| `POST /api/admin/usuarios` | `crearUsuario` | [admin.controller.js](../backend/controllers/admin.controller.js) |
 
-## Lectura del código
+## Preguntas de defensa con respuesta orientativa
 
-Pantalla React → ruta Express → controlador → Sequelize → MySQL. req.params trae el id; req.query, filtros; req.body, JSON; req.user, la cuenta autenticada. Las consultas deben restringir el propietario. Axios envía pedidos desde React y el JSON recibido está en respuesta.data. Un 204 no tiene JSON.
+**¿Por qué copiar ejercicios al iniciar?** El historial debe conservar lo que se hizo aunque se edite la rutina después.
 
-El backend usa for tradicional, if/else, async/await y try/catch. En JSX, map dibuja listas. Las transacciones con commit/rollback evitan guardados parciales; el cifrado, hash y sesión conservan cuentas y datos existentes. La clave de Cohere permanece en el servidor. No se reintroducen los temas retirados ni capas de servicios.
+**¿Para qué una transacción al crear usuario?** Usuario y su rol deben existir juntos. Si falla un paso se revierte para no dejar una cuenta incompleta.
 
-[Criterio del profesor y diferencias conservadas](../docs/CRITERIO-DEL-PROFESOR.md).
+**¿Crear desde admin inicia sesión como ese usuario?** No. Se crea la cuenta y se conserva la cookie y sesión del administrador.
+
+## Práctica equivalente para los nueve
+
+- [ ] Recorrer una acción desde el componente hasta MySQL y volver con la respuesta.
+- [ ] Mostrar un caso correcto con datos de prueba y persistencia comprobada.
+- [ ] Mostrar un caso de datos inválidos y explicar el código HTTP.
+- [ ] Mostrar un caso de autorización, cancelación o estado no permitido; no debe cambiar información.
+- [ ] Explicar el formulario, las funciones principales, las librerías y el diagrama sin leer código palabra por palabra.
+- [ ] Hacer una modificación pequeña y explicar el resultado (por ejemplo un texto, un límite válido o un campo).
+
+## Ensayo individual de 15–20 minutos
+
+2 minutos: ubicar backend/client y tu componente. 5 minutos: seguir una petición propia. 4 minutos: explicar modelo y validaciones. 4 minutos: demostrar éxito/error/cancelación. 3 minutos: responder las preguntas anteriores y los conceptos comunes. No memorizar respuestas sobre funciones que no revisaste.
+
+## Archivos compartidos y continuidad
+
+`backend/index.js` monta las rutas y sirve React; `backend/config/db.js` conecta Sequelize; `backend/models/index.js` relaciona modelos; `client/src/App.jsx` decide navegación y sesión. La base de estos archivos se revisa entre todos. Compartir un archivo no significa que cada persona deba defender todas sus ramas internas: ubicá tu método y seguí sus llamadas.
+
+El reparto final sustituye las estimaciones de carga del corte 75. Cada integrante tiene un paquete completo y la misma lista de comprobaciones; no son porcentajes medidos de autoría ni horas reales.

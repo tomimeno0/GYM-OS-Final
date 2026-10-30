@@ -1,9 +1,10 @@
 {
-  "criterio": "Casos nominales, no porcentaje de esfuerzo ni certificación integral. Se quitó CU004 por pedido del usuario.",
-  "incluidos": [
+  "version": "100",
+  "casos_funcionales": [
     "CU001",
     "CU002",
     "CU003",
+    "CU004",
     "CU005",
     "CU006",
     "CU007",
@@ -22,18 +23,15 @@
     "CU020",
     "CU021",
     "CU022",
+    "CU023",
     "CU024",
     "CU025",
+    "CU026",
     "CU027",
     "CU028",
     "CU029",
     "CU030",
-    "CU031"
-  ],
-  "fuera_de_alcance": [
-    "CU004",
-    "CU023",
-    "CU026",
+    "CU031",
     "CU032",
     "CU033",
     "CU034",
@@ -42,5 +40,7 @@
     "CU037",
     "CU038",
     "CU039"
-  ]
+  ],
+  "criterio": "Alcance funcional final; no representa nota, autor\u00eda, esfuerzo ni ausencia absoluta de errores. DVH/DVV y funciones de endurecimiento retiradas contin\u00faan fuera por decisi\u00f3n del usuario.",
+  "endpoints": 53
 }

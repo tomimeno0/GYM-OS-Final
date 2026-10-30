@@ -1,40 +1,42 @@
-# Joaquín Casanou · próximo avance
+# Joaquín Casanou · guía de la entrega final
 
-**Tarea nueva:** Adaptación de rutinas con IA.
+**Responsabilidad:** Catálogo y adaptación de planes con IA.
 
-**Estado: pendiente de trabajo y verificación individual.** No es una declaración de que ya lo programaste. Se conserva tu responsabilidad de base del 50 % y se añade un recorrido concreto del incremento.
+Conservás catálogo, lectura de rutinas y adaptación IA de rutinas. Sumás adaptación de dieta conservando su id y consulta de roles para la pantalla de asignación.
 
-## Qué tenés que hacer ahora
+Este documento asigna estudio, revisión y defensa. No certifica autoría pasada. Antes de exponer, completá las comprobaciones de tu recorrido.
 
-Elegir una rutina existente, enviar contexto previo y adaptar conservando su id. Revisar el flujo común con Tomás; demostrar diferencias entre crear una rutina nueva y reemplazar una anterior.
+## Primero: base común que puede preguntar el profesor
 
-## Mapa de tu avance
+Leé [BASE-COMUN.md](../docs/BASE-COMUN.md). Son conceptos breves que todos deben entender: carpetas, login, Bcrypt, JWT, middleware, CORS, useState y useEffect. El PDF permite preguntas sobre código de compañeros; no hay garantía de que limite la defensa a este módulo. El detalle profundo que sigue es tu parte.
+
+## Mapa de tu módulo
 
 ```mermaid
-flowchart LR
-  U["Formulario o acción: Adaptación de rutinas con IA"]
-  U --> E0["POST /api/ia/rutinas/:id/adaptar"]
-  E0 --> H0["modificarRutinaIA"]
-  H0 --> R["Validación, MySQL o Cohere y respuesta"]
-  R --> C["Mostrar resultado y comprobarlo"]
+flowchart TD
+  A["DietaIA.jsx: formulario o acción"] --> B["Axios: /api/ia/dietas/:id/adaptar"]
+  B --> C["Express: sesión y permiso cuando corresponde"]
+  C --> D["dietas-ia.controller.js: validar y consultar"]
+  D --> E["Sequelize y MySQL; proveedor cuando corresponde"]
+  E --> F["Respuesta HTTP y estado React"]
 ```
 
 ## Tus endpoints y continuidad
 
 | Etapa | Método y ruta | Handler real |
 | --- | --- | --- |
-| Base del 50 % | `GET /api/ejercicios` | [listarEjercicios](../controllers/rutinas.controller.js#L367) |
-| Base del 50 % | `GET /api/rutinas` | [listarRutinas](../controllers/rutinas.controller.js#L177) |
-| Avance nuevo | `POST /api/ia/rutinas/:id/adaptar` | [modificarRutinaIA](../controllers/ia.controller.js#L261) |
+| Base del 50 % | `GET /api/ejercicios` | [listarEjercicios](../backend/controllers/rutinas.controller.js#L367) |
+| Base del 50 % | `GET /api/rutinas` | [listarRutinas](../backend/controllers/rutinas.controller.js#L177) |
+| Avance nuevo | `POST /api/ia/rutinas/:id/adaptar` | [modificarRutinaIA](../backend/controllers/ia.controller.js#L261) |
 
 ## Funciones concretas del avance
 
 | Función | Qué parte recorrés |
 | --- | --- |
-| [modificarRutinaIA](../controllers/ia.controller.js#L261) | Entrada de adaptación; delega al flujo con el id existente. |
-| [generarRutinaIA](../controllers/ia.controller.js#L88) | Tu tramo aporta rutina previa y comprueba propiedad; conserva el id al reemplazar ejercicios. |
-| [generarRutina](../controllers/ia.controller.js#L52) | Formato de propuesta compartido con Tomás. |
-| [generar](../client/src/pages/Asistente.jsx#L101) | Selector de rutina y llamada /adaptar; preparar/confirmar el envío. |
+| [modificarRutinaIA](../backend/controllers/ia.controller.js#L261) | Entrada de adaptación; delega al flujo con el id existente. |
+| [generarRutinaIA](../backend/controllers/ia.controller.js#L88) | Tu tramo aporta rutina previa y comprueba propiedad; conserva el id al reemplazar ejercicios. |
+| [generarRutina](../backend/controllers/ia.controller.js#L52) | Formato de propuesta compartido con Tomás. |
+| [generar](../client/src/pages/Asistente.jsx) | Selector de rutina y llamada /adaptar; preparar/confirmar el envío. |
 
 Los helpers son funciones internas, no endpoints adicionales. Si una función sirve a POST y PUT o a generación y adaptación, se revisa entre los dos responsables. No hay que duplicarla ni separarla artificialmente para aparentar más código.
 
@@ -88,24 +90,41 @@ Los helpers son funciones internas, no endpoints adicionales. Si una función si
 
 **Cómo mostrarlo.** Adaptar una rutina de prueba y mostrar el mismo id con ejercicios distintos; contrastar con crear otra rutina.
 
-## Cuándo está terminado tu bloque
 
-- [ ] Adaptar conserva el id de la rutina.
-- [ ] El nuevo contenido responde a preferencias y pasa validarEjercicios.
-- [ ] Una rutina ajena o no activa se rechaza; sin propuesta válida no hay reemplazo parcial.
-- [ ] Explicar el recorrido desde el input hasta la respuesta, sin leer el código palabra por palabra.
-- [ ] Registrar qué revisión, cambio o comprobación hiciste realmente; si hay commit, usar la identidad real.
+## Lo que se agrega en el cierre
 
-## Tamaño previsto y trabajo compartido
+`modificarRutinaIA` usa el mismo generador de rutinas, pero busca la rutina propia por id; conserva la cabecera y reemplaza ejercicios dentro de transacción. `modificarDietaIA` llama al recorrido común con req.params.id; busca dieta activa propia, prepara comidas anteriores y consumos recientes como contexto y guarda sobre el mismo id. No confundir adaptar con crear: el primero responde 200, el segundo 201. `listarEjercicios` filtra nombre/grupo y pagina de 24 sin necesitar imágenes externas. `listarRoles` devuelve las definiciones existentes, no asigna nada por GET. Los permisos de gestión se comprueban en el middleware.
 
-Como referencia, este paquete cubre **9.46 %** de las 1.702 líneas nuevas/reemplazadas del incremento medido. Es cobertura asignada para revisar/trabajar, no un porcentaje de programación ya hecho. No mide dificultad ni tiempo y se reajusta si al trabajar aparece una diferencia de carga.
+### Rutas nuevas que defendés
 
-[Plan y límites del cálculo](../docs/PLAN.md). La meta es cerca de 11 % por persona, con margen; el alcance de entrega puede quedar por encima o por debajo del nombre histórico 75. No se inflan líneas ni se atribuye código intacto como una mejora.
+| Método y ruta | Función | Archivo |
+| --- | --- | --- |
+| `POST /api/ia/dietas/:id/adaptar` | `modificarDietaIA` | [dietas-ia.controller.js](../backend/controllers/dietas-ia.controller.js) |
+| `GET /api/admin/roles` | `listarRoles` | [admin.controller.js](../backend/controllers/admin.controller.js) |
 
-## Lectura del código
+## Preguntas de defensa con respuesta orientativa
 
-Pantalla React → ruta Express → controlador → Sequelize → MySQL. req.params trae el id; req.query, filtros; req.body, JSON; req.user, la cuenta autenticada. Las consultas deben restringir el propietario. Axios envía pedidos desde React y el JSON recibido está en respuesta.data. Un 204 no tiene JSON.
+**¿Adaptar puede crear otra dieta por error?** Con id se exige dieta activa propia. Si no existe responde 404 y no se convierte en alta.
 
-El backend usa for tradicional, if/else, async/await y try/catch. En JSX, map dibuja listas. Las transacciones con commit/rollback evitan guardados parciales; el cifrado, hash y sesión conservan cuentas y datos existentes. La clave de Cohere permanece en el servidor. No se reintroducen los temas retirados ni capas de servicios.
+**¿Qué se le envía a Cohere?** Medidas reducidas, meta, preferencias y resumen de plan/historial; no email, teléfono, contraseña ni la clave como contexto.
 
-[Criterio del profesor y diferencias conservadas](../docs/CRITERIO-DEL-PROFESOR.md).
+**¿Por qué paginar el catálogo?** Evita renderizar todo de una vez y permite buscar grupos/nombres con resultados de 24.
+
+## Práctica equivalente para los nueve
+
+- [ ] Recorrer una acción desde el componente hasta MySQL y volver con la respuesta.
+- [ ] Mostrar un caso correcto con datos de prueba y persistencia comprobada.
+- [ ] Mostrar un caso de datos inválidos y explicar el código HTTP.
+- [ ] Mostrar un caso de autorización, cancelación o estado no permitido; no debe cambiar información.
+- [ ] Explicar el formulario, las funciones principales, las librerías y el diagrama sin leer código palabra por palabra.
+- [ ] Hacer una modificación pequeña y explicar el resultado (por ejemplo un texto, un límite válido o un campo).
+
+## Ensayo individual de 15–20 minutos
+
+2 minutos: ubicar backend/client y tu componente. 5 minutos: seguir una petición propia. 4 minutos: explicar modelo y validaciones. 4 minutos: demostrar éxito/error/cancelación. 3 minutos: responder las preguntas anteriores y los conceptos comunes. No memorizar respuestas sobre funciones que no revisaste.
+
+## Archivos compartidos y continuidad
+
+`backend/index.js` monta las rutas y sirve React; `backend/config/db.js` conecta Sequelize; `backend/models/index.js` relaciona modelos; `client/src/App.jsx` decide navegación y sesión. La base de estos archivos se revisa entre todos. Compartir un archivo no significa que cada persona deba defender todas sus ramas internas: ubicá tu método y seguí sus llamadas.
+
+El reparto final sustituye las estimaciones de carga del corte 75. Cada integrante tiene un paquete completo y la misma lista de comprobaciones; no son porcentajes medidos de autoría ni horas reales.

@@ -16,6 +16,15 @@ async function inicializar() {
       sistema: true,
     },
   });
+  await Rol.findOrCreate({
+    where: { nombre: "Administrador" },
+    defaults: {
+      descripcion: "Administración del sistema",
+      permisos: ["administrar"],
+      sistema: true,
+      fecha_creacion: new Date(),
+    },
+  });
   if (process.env.DEMO_PASSWORD && process.env.DEMO_PASSWORD !== "CAMBIAR") {
     const [usuario, creado] = await Usuario.findOrCreate({
       where: { email: "demo@gymos.local" },

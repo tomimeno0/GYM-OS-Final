@@ -1,6 +1,12 @@
 const { Op } = require("sequelize");
 const { sequelize } = require("../config/db");
-const { Dieta, DietaComida, ComidaConsumida, Objetivo } = require("../models");
+const {
+  Dieta,
+  DietaComida,
+  ComidaConsumida,
+  Objetivo,
+  Usuario,
+} = require("../models");
 function calcularMacros(alimentos) {
   if (
     !Array.isArray(alimentos) ||
@@ -245,7 +251,31 @@ async function actualizarDieta(req, res) {
     }
     const transaction = await sequelize.transaction();
     try {
+      if (req.generacionIA) {
+        const usuarioActual = await Usuario.findByPk(req.user.id, {
+          transaction,
+          lock: transaction.LOCK.UPDATE,
+        });
+        if (!usuarioActual || !usuarioActual.consentimiento_ia)
+          throw new Error("Consentimiento retirado");
+        const objetivoActual = await Objetivo.findOne({
+          where: { id: objetivo_id, usuario_id: req.user.id, estado: "activo" },
+          transaction,
+        });
+        if (!objetivoActual) throw new Error("El objetivo cambió");
+      }
+      if (dieta) {
+        dieta = await Dieta.findOne({
+          where: { id: dieta.id, usuario_id: req.user.id, estado: "activa" },
+          transaction,
+          lock: transaction.LOCK.UPDATE,
+        });
+        if (!dieta) throw new Error("Dieta no disponible");
+      }
+      let tipo_generacion = "manual";
+      if (req.generacionIA) tipo_generacion = "ia";
       const datos = {
+        tipo_generacion,
         nombre: nombre.trim(),
         descripcion,
         objetivo_id: objetivo_id || null,
@@ -277,7 +307,7 @@ async function actualizarDieta(req, res) {
             grasas_objetivo_g: datos.grasas_objetivo_g,
             fecha_actualizacion: datos.fecha_actualizacion,
             usuario_id: req.user.id,
-            tipo_generacion: "manual",
+            tipo_generacion: datos.tipo_generacion,
             fecha_creacion: new Date(),
           },
           {

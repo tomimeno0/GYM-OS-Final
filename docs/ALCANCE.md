@@ -1,21 +1,13 @@
-# Edición 75 · alcance actual
+# Alcance de la entrega final
 
-El nombre de la entrega se conserva. Tras el recorte solicitado hay **28/39 casos nominales (71,79 %)**; no es un porcentaje de esfuerzo ni certificación de todos los diagramas.
+Se implementan los recorridos funcionales CU001–CU039: cuentas (registro/login/logout/recuperación/perfil/baja), medidas y objetivos, progreso, rutinas manuales y por IA, entrenamientos, dietas manuales y por IA, consumos/macros, chat y administración de usuarios/roles. Hay 53 endpoints. También se incluye cambio de contraseña autenticado, solicitado por la pauta PI2.
 
-Incluye cuentas, perfil, mediciones, objetivos, progreso, rutinas manuales, catálogo, entrenamientos y chat con Cohere, rutinas generadas/adaptadas con IA, dietas manuales y consumos/macros. La selección exacta está en [alcance.json](../alcance.json).
+La versión se deriva del repositorio 75 %, que queda intacto. El proyecto completo histórico GYM-OS tampoco se modifica. Backend CommonJS en backend/ y React en client/, sin servicios ni validadores genéricos. Las transacciones se conservan para cambios conjuntos y las autorizaciones se comprueban en middleware.
 
-Se retiraron CU004, su interfaz, rutas, controlador, modelo y dependencias. También se quitaron los limitadores de intentos y la comprobación de origen/cabecera de escritura. No se reemplazaron por mecanismos equivalentes ocultos. El registro, login, hash de contraseñas, cookie de sesión y filtros de propiedad siguen funcionando. No se considera una configuración adecuada para exponer públicamente un servicio de producción.
+«100 %» expresa alcance funcional de la entrega, no una evaluación de nota ni autoría. No se promete equivalencia literal con los 39 diagramas en sus controles de integridad: por instrucción previa siguen fuera DVH/DVV, limitadores y comprobaciones especiales de origen/cabecera. Se mantiene Bcrypt, JWT, cookies HttpOnly, filtros de propietario, cifrado AES del teléfono, confirmaciones, validaciones y transacciones. Las columnas dvh están reservadas.
 
-La arquitectura es la del curso: CommonJS, rutas, controladores y modelos explícitos. No hay servicios, clases delegadoras, validadores genéricos, HMAC de tablas, mutex ni reintentos automáticos de IA. Se mantienen try/catch, validaciones de datos y transacciones concretas de cabecera/detalle.
+La IA requiere Cohere, un proveedor externo y consentimiento; no puede garantizarse disponibilidad continua del proveedor. Recuperación puede probarse con SMTP y buzón local Mailpit; entrega a correos externos exige configurar un remitente real. El catálogo textual de ejercicios funciona sin medios de terceros con licencia separada.
 
-Las columnas dvh del DER quedan reservadas; no se implementan DVH/DVV. Los nombres UML del corte se usan como funciones, no como una jerarquía de clases. El pedido actual excluye expresamente la operación retirada, aunque aparezca en el documento original.
+Nombres: CU018 se trata como edición manual y CU019 como adaptación IA, siguiendo las secuencias particulares frente a su índice contradictorio. La baja de objetivo/rutina/dieta conserva historia; eliminar una cuenta borra sus datos asociados. Un entrenamiento contiene una copia de los ejercicios. Un solo objetivo activo y entrenamiento en curso por cuenta se controlan con campos únicos y validaciones.
 
-No hay administración ni generación/adaptación de dietas IA. Los nutrientes de alimentos se ingresan manualmente; no existe un proveedor externo de alimentos. El proyecto completo original no se modifica.
-
-## Reparto del avance · 26/10/2026
-
-El nombre 75 es una referencia histórica; no obliga a alcanzar un porcentaje exacto. Se adopta un [plan de trabajo equilibrado para los nueve](PLAN.md), con paquetes pendientes y cobertura prevista de 9,28 % a 13,04 %. Esta actualización de documentación no cambia el alcance ejecutable ni acredita aportes realizados.
-
-## Ampliación posterior al corte
-
-Se añade recuperación por correo con dos endpoints y pantallas públicas, asignada a Gianluca para estudio y revisión. El conteo 28/39 y los porcentajes del avance documentan el corte previo y no incluyen esta incorporación. El envío real requiere configurar SMTP.
+[Requisitos y evidencia](REQUISITOS-ENTREGA.md) · [Resultados de pruebas](VERIFICACION.md) · [API y responsables](../guias/README.md).

@@ -1,48 +1,47 @@
-# Valentín Schueld (Sueco) · próximo avance
+# Valentín Sued (Sueco) · guía de la entrega final
 
-**Tarea nueva:** Consulta/baja de dietas y editor de comidas.
+**Responsabilidad:** Rutinas manuales y gestión de dietas.
 
-**Estado: pendiente de trabajo y verificación individual.** No es una declaración de que ya lo programaste. Se conserva tu responsabilidad de base del 50 % y se añade un recorrido concreto del incremento.
+Conservás escritura/baja de rutinas, consulta/baja de dietas y editor de comidas. Integrás la presentación de comidas y sus alimentos generados por IA y revisás eliminación de roles no asignados.
 
-## Qué tenés que hacer ahora
+Este documento asigna estudio, revisión y defensa. No certifica autoría pasada. Antes de exponer, completá las comprobaciones de tu recorrido.
 
-Mostrar planes guardados y dar uno de baja con confirmación. Completar el editor de nombre/tipo/hora de comida y agregar/quitar comidas sin perder datos. Revisar persistencia del detalle con Gade.
+## Primero: base común que puede preguntar el profesor
 
-## Mapa de tu avance
+Leé [BASE-COMUN.md](../docs/BASE-COMUN.md). Son conceptos breves que todos deben entender: carpetas, login, Bcrypt, JWT, middleware, CORS, useState y useEffect. El PDF permite preguntas sobre código de compañeros; no hay garantía de que limite la defensa a este módulo. El detalle profundo que sigue es tu parte.
+
+## Mapa de tu módulo
 
 ```mermaid
-flowchart LR
-  U["Formulario o acción: Consulta/baja de dietas y editor de comidas"]
-  U --> E0["GET /api/dietas"]
-  E0 --> H0["listarDietas"]
-  H0 --> R["Validación, MySQL o Cohere y respuesta"]
-  U --> E1["DELETE /api/dietas/:id"]
-  E1 --> H1["eliminarDieta"]
-  H1 --> R["Validación, MySQL o Cohere y respuesta"]
-  R --> C["Mostrar resultado y comprobarlo"]
+flowchart TD
+  A["Nutricion.jsx: formulario o acción"] --> B["Axios: /api/dietas"]
+  B --> C["Express: sesión y permiso cuando corresponde"]
+  C --> D["nutricion.controller.js: validar y consultar"]
+  D --> E["Sequelize y MySQL; proveedor cuando corresponde"]
+  E --> F["Respuesta HTTP y estado React"]
 ```
 
 ## Tus endpoints y continuidad
 
 | Etapa | Método y ruta | Handler real |
 | --- | --- | --- |
-| Base del 50 % | `POST /api/rutinas` | [actualizarRutina](../controllers/rutinas.controller.js#L229) |
-| Base del 50 % | `PUT /api/rutinas/:id` | [actualizarRutina](../controllers/rutinas.controller.js#L229) |
-| Base del 50 % | `DELETE /api/rutinas/:id` | [eliminarRutina](../controllers/rutinas.controller.js#L324) |
-| Avance nuevo | `GET /api/dietas` | [listarDietas](../controllers/nutricion.controller.js#L123) |
-| Avance nuevo | `DELETE /api/dietas/:id` | [eliminarDieta](../controllers/nutricion.controller.js#L310) |
+| Base del 50 % | `POST /api/rutinas` | [actualizarRutina](../backend/controllers/rutinas.controller.js#L229) |
+| Base del 50 % | `PUT /api/rutinas/:id` | [actualizarRutina](../backend/controllers/rutinas.controller.js#L229) |
+| Base del 50 % | `DELETE /api/rutinas/:id` | [eliminarRutina](../backend/controllers/rutinas.controller.js#L324) |
+| Avance nuevo | `GET /api/dietas` | [listarDietas](../backend/controllers/nutricion.controller.js#L129) |
+| Avance nuevo | `DELETE /api/dietas/:id` | [eliminarDieta](../backend/controllers/nutricion.controller.js#L340) |
 
 ## Funciones concretas del avance
 
 | Función | Qué parte recorrés |
 | --- | --- |
-| [listarDietas](../controllers/nutricion.controller.js#L123) | Consulta propia con detalles. |
-| [eliminarDieta](../controllers/nutricion.controller.js#L310) | Baja lógica confirmada; no suma ni borra consumos. |
-| [copiarComida](../client/src/pages/Nutricion.jsx#L83) | Copia los campos de una comida del editor. |
-| [actualizarComidas](../client/src/pages/Nutricion.jsx#L279) | Actualiza la colección de comidas sin mutar estado. |
-| [agregarComida](../client/src/pages/Nutricion.jsx#L300) | Agrega una comida nueva al plan. |
-| [quitarComida](../client/src/pages/Nutricion.jsx#L291) | Quita una comida elegida del editor. |
-| [actualizarComida](../controllers/nutricion.controller.js#L96) | Detalle de dieta; revisión conjunta con Gade, que maneja alimentos compartidos. |
+| [listarDietas](../backend/controllers/nutricion.controller.js#L129) | Consulta propia con detalles. |
+| [eliminarDieta](../backend/controllers/nutricion.controller.js#L340) | Baja lógica confirmada; no suma ni borra consumos. |
+| [copiarComida](../client/src/pages/Nutricion.jsx) | Copia los campos de una comida del editor. |
+| [actualizarComidas](../client/src/pages/Nutricion.jsx) | Actualiza la colección de comidas sin mutar estado. |
+| [agregarComida](../client/src/pages/Nutricion.jsx) | Agrega una comida nueva al plan. |
+| [quitarComida](../client/src/pages/Nutricion.jsx) | Quita una comida elegida del editor. |
+| [actualizarComida](../backend/controllers/nutricion.controller.js#L102) | Detalle de dieta; revisión conjunta con Gade, que maneja alimentos compartidos. |
 
 Los helpers son funciones internas, no endpoints adicionales. Si una función sirve a POST y PUT o a generación y adaptación, se revisa entre los dos responsables. No hay que duplicarla ni separarla artificialmente para aparentar más código.
 
@@ -128,24 +127,40 @@ Los helpers son funciones internas, no endpoints adicionales. Si una función si
 
 **Cómo mostrarlo.** Cancelar una baja y explicar qué información se conservaría al confirmarla.
 
-## Cuándo está terminado tu bloque
 
-- [ ] Listar solo dietas propias y mostrar sus comidas.
-- [ ] Agregar y quitar una comida conserva las otras.
-- [ ] Cancelar baja conserva el plan; confirmar lo excluye de los activos sin alterar consumos.
-- [ ] Explicar el recorrido desde el input hasta la respuesta, sin leer el código palabra por palabra.
-- [ ] Registrar qué revisión, cambio o comprobación hiciste realmente; si hay commit, usar la identidad real.
+## Lo que se agrega en el cierre
 
-## Tamaño previsto y trabajo compartido
+En `Nutricion.jsx`, `cargar` distingue dietas de consumos; `editar` carga la cabecera y copia comidas/alimentos sin mutar items. `guardar` usa POST o PUT y `eliminar` requiere Confirmar. `DietaIA.jsx` gestiona preferencias, confirmación y selector de plan: sin id genera, con id adapta. La lista muestra los alimentos, cantidades y unidades, además de los macros. `actualizarDieta` valida toda la cabecera/detalle antes de escribir; al editar elimina y vuelve a crear comidas dentro de la misma transacción. Si la IA interviene, revalida consentimiento y objetivo antes de guardar. `eliminarRol` solo permite borrar roles personalizados que no estén asignados; protege Cliente y Administrador.
 
-Como referencia, este paquete cubre **12.81 %** de las 1.702 líneas nuevas/reemplazadas del incremento medido. Es cobertura asignada para revisar/trabajar, no un porcentaje de programación ya hecho. No mide dificultad ni tiempo y se reajusta si al trabajar aparece una diferencia de carga.
+### Rutas nuevas que defendés
 
-[Plan y límites del cálculo](../docs/PLAN.md). La meta es cerca de 11 % por persona, con margen; el alcance de entrega puede quedar por encima o por debajo del nombre histórico 75. No se inflan líneas ni se atribuye código intacto como una mejora.
+| Método y ruta | Función | Archivo |
+| --- | --- | --- |
+| `DELETE /api/admin/roles/:id` | `eliminarRol` | [admin.controller.js](../backend/controllers/admin.controller.js) |
 
-## Lectura del código
+## Preguntas de defensa con respuesta orientativa
 
-Pantalla React → ruta Express → controlador → Sequelize → MySQL. req.params trae el id; req.query, filtros; req.body, JSON; req.user, la cuenta autenticada. Las consultas deben restringir el propietario. Axios envía pedidos desde React y el JSON recibido está en respuesta.data. Un 204 no tiene JSON.
+**¿Una dieta es lo mismo que un consumo?** No. Dieta es planificación; ComidaConsumida registra lo que ocurrió. El resumen diario suma consumos.
 
-El backend usa for tradicional, if/else, async/await y try/catch. En JSX, map dibuja listas. Las transacciones con commit/rollback evitan guardados parciales; el cifrado, hash y sesión conservan cuentas y datos existentes. La clave de Cohere permanece en el servidor. No se reintroducen los temas retirados ni capas de servicios.
+**¿Por qué reemplazar las comidas en una transacción?** Evita cabecera nueva con detalles viejos o una dieta vacía si falla la inserción de una comida.
 
-[Criterio del profesor y diferencias conservadas](../docs/CRITERIO-DEL-PROFESOR.md).
+**¿Por qué no se borra un rol asignado?** Hay usuarios que lo usan. Primero se reemplazan sus asignaciones; roles de sistema no se eliminan.
+
+## Práctica equivalente para los nueve
+
+- [ ] Recorrer una acción desde el componente hasta MySQL y volver con la respuesta.
+- [ ] Mostrar un caso correcto con datos de prueba y persistencia comprobada.
+- [ ] Mostrar un caso de datos inválidos y explicar el código HTTP.
+- [ ] Mostrar un caso de autorización, cancelación o estado no permitido; no debe cambiar información.
+- [ ] Explicar el formulario, las funciones principales, las librerías y el diagrama sin leer código palabra por palabra.
+- [ ] Hacer una modificación pequeña y explicar el resultado (por ejemplo un texto, un límite válido o un campo).
+
+## Ensayo individual de 15–20 minutos
+
+2 minutos: ubicar backend/client y tu componente. 5 minutos: seguir una petición propia. 4 minutos: explicar modelo y validaciones. 4 minutos: demostrar éxito/error/cancelación. 3 minutos: responder las preguntas anteriores y los conceptos comunes. No memorizar respuestas sobre funciones que no revisaste.
+
+## Archivos compartidos y continuidad
+
+`backend/index.js` monta las rutas y sirve React; `backend/config/db.js` conecta Sequelize; `backend/models/index.js` relaciona modelos; `client/src/App.jsx` decide navegación y sesión. La base de estos archivos se revisa entre todos. Compartir un archivo no significa que cada persona deba defender todas sus ramas internas: ubicá tu método y seguí sus llamadas.
+
+El reparto final sustituye las estimaciones de carga del corte 75. Cada integrante tiene un paquete completo y la misma lista de comprobaciones; no son porcentajes medidos de autoría ni horas reales.

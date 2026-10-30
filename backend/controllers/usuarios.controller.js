@@ -21,7 +21,21 @@ function datosPublicos(usuario) {
     fecha_nacimiento: usuario.fecha_nacimiento,
     zona_horaria: usuario.zona_horaria,
     consentimiento_ia: usuario.consentimiento_ia,
+    administrador: Boolean(usuario.administrador),
+    permisos: usuario.permisos || [],
   };
+}
+async function cargarRoles(usuario) {
+  const roles = await usuario.getRoles();
+  usuario.administrador = false;
+  usuario.permisos = [];
+  for (let i = 0; i < roles.length; i++) {
+    if (roles[i].nombre === "Administrador") usuario.administrador = true;
+    for (let j = 0; j < roles[i].permisos.length; j++) {
+      if (!usuario.permisos.includes(roles[i].permisos[j]))
+        usuario.permisos.push(roles[i].permisos[j]);
+    }
+  }
 }
 async function abrirSesion(usuario, res, transaction) {
   const token = jwt.sign(
@@ -45,7 +59,7 @@ async function abrirSesion(usuario, res, transaction) {
       transaction,
     },
   );
-  res.cookie("gymos75", token, {
+  res.cookie("gymos100", token, {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
@@ -196,6 +210,7 @@ async function iniciarSesion(req, res) {
       await transaction.rollback();
       throw errorGuardado;
     }
+    await cargarRoles(usuario);
     res.json({
       user: datosPublicos(usuario),
     });
@@ -215,10 +230,10 @@ async function cerrarSesion(req, res) {
     await Sesion.destroy({
       where: {
         usuario_id: req.user.id,
-        token_hash: hashToken(req.cookies.gymos75),
+        token_hash: hashToken(req.cookies.gymos100),
       },
     });
-    res.clearCookie("gymos75", {
+    res.clearCookie("gymos100", {
       path: "/",
       httpOnly: true,
       sameSite: "lax",
@@ -314,6 +329,14 @@ async function eliminarCuenta(req, res) {
         message: "Confirmá la eliminación con tu contraseña actual.",
       });
     }
+    if (req.user.administrador) {
+      return res
+        .status(409)
+        .json({
+          message:
+            "Una cuenta administradora debe ser eliminada desde el panel por otro administrador.",
+        });
+    }
     const transaction = await sequelize.transaction();
     try {
       await registrarEvento(
@@ -330,7 +353,7 @@ async function eliminarCuenta(req, res) {
       await transaction.rollback();
       throw errorGuardado;
     }
-    res.clearCookie("gymos75", {
+    res.clearCookie("gymos100", {
       path: "/",
       httpOnly: true,
       sameSite: "lax",
@@ -342,7 +365,60 @@ async function eliminarCuenta(req, res) {
     });
   }
 }
+async function cambiarPassword(req, res) {
+  const { actual, nueva } = req.body;
+  if (
+    typeof actual !== "string" ||
+    Buffer.byteLength(actual) > 72 ||
+    typeof nueva !== "string" ||
+    nueva.length < 10 ||
+    Buffer.byteLength(nueva) > 72
+  ) {
+    return res
+      .status(400)
+      .json({
+        message:
+          "Revisá la contraseña actual y la nueva (10 caracteres como mínimo y hasta 72 bytes).",
+      });
+  }
+  let transaction;
+  try {
+    transaction = await sequelize.transaction();
+    const usuario = await Usuario.findByPk(req.user.id, {
+      transaction,
+      lock: transaction.LOCK.UPDATE,
+    });
+    if (!usuario || !(await compararPassword(actual, usuario.password_hash))) {
+      await transaction.rollback();
+      return res
+        .status(403)
+        .json({ message: "La contraseña actual no coincide." });
+    }
+    await usuario.update(
+      { password_hash: await encriptarIrreversible(nueva) },
+      { transaction },
+    );
+    await Sesion.destroy({ where: { usuario_id: usuario.id }, transaction });
+    await require("../models").Recuperacion.destroy({
+      where: { usuario_id: usuario.id },
+      transaction,
+    });
+    await registrarEvento(
+      usuario.id,
+      "CAMBIO_PASSWORD",
+      "cuentas",
+      transaction,
+    );
+    await transaction.commit();
+    res.clearCookie("gymos100", { path: "/", httpOnly: true, sameSite: "lax" });
+    res.json({ message: "Contraseña actualizada. Volvé a iniciar sesión." });
+  } catch (error) {
+    if (transaction && !transaction.finished) await transaction.rollback();
+    res.status(500).json({ message: "No se pudo cambiar la contraseña." });
+  }
+}
 module.exports = {
+  cambiarPassword,
   registrarUsuario,
   iniciarSesion,
   cerrarSesion,
@@ -350,4 +426,5 @@ module.exports = {
   actualizarDatos,
   eliminarCuenta,
   datosPublicos,
+  cargarRoles,
 };

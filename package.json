@@ -1,13 +1,14 @@
 {
-  "name": "gym-os-preentrega-75",
-  "version": "0.75.0",
+  "name": "gym-os-final",
+  "version": "1.0.0",
   "private": true,
   "type": "commonjs",
   "scripts": {
-    "start": "node index.js",
-    "dev": "node --watch index.js",
-    "db:iniciar": "node config/inicializar.js",
-    "build": "npm run build --prefix client"
+    "start": "node backend/index.js",
+    "dev": "node --watch backend/index.js",
+    "db:iniciar": "node backend/config/inicializar.js",
+    "build": "npm run build --prefix client",
+    "admin:crear": "node backend/config/crear-admin.js"
   },
   "dependencies": {
     "bcrypt": "6.0.0",

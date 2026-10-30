@@ -1,66 +1,37 @@
-# GYM-OS · Preentrega 75
+# GYM-OS · entrega final
 
-Proyecto educativo en JavaScript con React, Express, Sequelize y MySQL. Esta copia reorganiza la aplicación según los ejemplos de `REPASO COMPLETO.rar`: rutas → controladores → modelos, con consultas directas y funciones visibles.
+Aplicación educativa de entrenamiento, objetivos, rutinas, nutrición y asistencia por IA, con cuentas y administración por roles. JavaScript, React + Vite, Express, Sequelize y MySQL. Deriva del corte [75 %](https://github.com/tomimeno0/GYM-OS-Preentrega-75) y conserva su lógica y reparto, ampliados para la entrega final.
 
-No reemplaza el proyecto completo ni la preentrega anterior. El nombre identifica el corte de entrega: incluye 28 de los 39 casos nominales (71,79 %), no un 75 % medido por dificultad, tiempo ni autoría. Ver [alcance y límites](docs/ALCANCE.md).
+## Instalación
 
-## Cómo está organizado
+Requiere Node.js 22.12 o posterior, npm, Docker con Compose y puertos 5176, 3312, 1026 y 8026 libres.
 
-```text
-index.js                 servidor Express
-config/db.js             conexión MySQL
-config/inicializar.js    creación inicial de tablas y cuenta demo
-models/                  tablas y relaciones Sequelize
-controllers/             lógica de cada función
-routes/                  dirección HTTP → función del controlador
-client/src/pages/        pantallas React con estado y Axios
-client/src/components/   confirmación visible de acciones
-models/exercises/        catálogo textual de ejercicios y licencia
-sql/estructura.sql       esquema MySQL, sin usuarios ni datos personales
-```
+1. Ejecutar `npm ci` y `npm ci --prefix client`.
+2. Copiar `.env.example` a `.env`. Completar las credenciales MySQL, un `JWT_SECRET` aleatorio de al menos 32 caracteres y `ENCRYPTION_KEY` con 64 caracteres hexadecimales. `node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"` permite generar cada secreto por separado.
+3. Ejecutar `docker compose up -d` (o `docker-compose up -d` si Compose está instalado como comando separado). Esperar a que MySQL esté saludable con `docker compose ps`. En esta Mac se usa el contexto `colima-gymos`.
+4. Ejecutar `npm run db:iniciar`. Crea tablas/roles sin borrar datos. Opcional: configurar `ADMIN_EMAIL` y `ADMIN_PASSWORD`, y ejecutar `npm run admin:crear`.
+5. Ejecutar `npm run build` y `npm start`.
+6. Abrir http://localhost:5176. El servidor responde en loopback IPv4/IPv6. Estado de MySQL: http://localhost:5176/api/salud.
 
-Cada pantalla usa `useState`, `useEffect`, formularios y Axios. No hay carpeta de servicios, clases de despacho, validadores genéricos ni reintentos automáticos de IA. Se retiraron los temas 45, 46 y 47. Las contraseñas siguen protegidas; simplificar no significa publicar credenciales ni permitir consultar cuentas ajenas. [Criterio del profesor](docs/CRITERIO-DEL-PROFESOR.md).
+La base tiene volumen independiente del 75 %. No se incluyen credenciales reales ni los PDF privados. Para una cuenta demostración, configurar `DEMO_PASSWORD` antes de `db:iniciar`; su correo es `demo@gymos.local`.
 
-## Ejecutar
+## Carpetas
 
-Requiere Node.js 22.12 o posterior compatible con Vite, npm y MySQL 8.4. Docker es opcional; `compose.yaml` inicia una base separada en el puerto 3310.
+- `backend/index.js`: Express, rutas y archivos estáticos.
+- `backend/config/`: conexión, inicialización y creación de administrador.
+- `backend/routes/`, `backend/controllers/`, `backend/models/`: arquitectura del curso, sin capa de servicios.
+- `client/src/`: React, formularios, navegación, componentes y estilos.
+- `guias/`: exactamente nueve guías individuales con diagramas y preguntas.
+- `docs/`: manual, requisitos, API, defensa y validación.
 
-1. Copiar `.env.example` a `.env`. Completar los valores `CAMBIAR`. Usar una contraseña de demo de al menos 10 caracteres y como máximo 72 bytes; `JWT_SECRET` debe tener al menos 32 caracteres. `ENCRYPTION_KEY` debe ser una clave hexadecimal aleatoria de 64 caracteres. No publicar ese archivo.
-2. Si usás Docker: `docker compose up -d`. Si tenés el ejecutable independiente, `docker-compose up -d`. En esta Mac el contexto es `colima-gymos`; usar `DOCKER_CONTEXT=colima-gymos docker-compose up -d` con Colima ya iniciado.
-3. `npm ci` y `npm ci --prefix client`.
-4. `npm run db:iniciar`: crea tablas faltantes y el rol Cliente. No borra tablas ni modifica su estructura. Si se definió `DEMO_PASSWORD`, crea `demo@gymos.local` solo si no existe; nunca restablece una cuenta existente.
-5. `npm run build` y `npm start`.
-6. Abrir **http://localhost:5175**. El servidor escucha únicamente en las dos direcciones locales IPv4/IPv6; no se publica en la red.
+## Correo e IA
 
-Para editar React con recarga: mantener el servidor y ejecutar `npm run dev --prefix client`; abre http://localhost:5176 con el proxy `/api`. Después de modificar el backend hay que reiniciarlo, o usar `npm run dev` en lugar de `npm start`.
+La recuperación funciona con enlaces de 15 minutos y uso único. Para demostrarla localmente, el servicio `correo` de Compose recibe SMTP en 1026 y muestra el buzón en http://localhost:8026. Configurar `SMTP_HOST=127.0.0.1`, `SMTP_PORT=1026`, `SMTP_SECURE=false`, `SMTP_FROM=no-reply@gymos.local` y `APP_URL=http://localhost:5176`. Mailpit captura correo local: no entrega a Gmail/Outlook. Para envío externo, usar las variables SMTP del proveedor; 465 suele usar `SMTP_SECURE=true`, 587 usa STARTTLS. No desactivar validación de certificados.
 
-Para usar una instalación propia de MySQL, crear una base vacía y un usuario con permisos solamente sobre esa base; configurar `DB_*` y ejecutar el paso de inicialización. `sql/estructura.sql` permite inspeccionar el esquema; no hace falta importarlo además de inicializar.
+Para chat y generación/adaptación de rutinas/dietas, configurar `COHERE_API_KEY` y `COHERE_MODEL` (se verificó `command-r-08-2024`) en `.env`. Cada cuenta debe habilitar consentimiento en Mi cuenta. El backend llama a Cohere por API y valida el JSON antes de guardar. No hay modelos locales ni respuestas de reemplazo que aparenten ser IA. Fallos del proveedor se muestran como error sin dar por guardada una propuesta.
 
-## IA
+## Documentación
 
-Cohere se llama desde el backend, con clave privada en .env y consentimiento en Mi cuenta. No hay modelo local ni respuesta simulada. Una llamada puede fallar y se informa sin reintentar automáticamente. [Referencia de la API](https://docs.cohere.com/v2/reference/chat).
+[Manual de usuario](docs/MANUAL-USUARIO.md) · [Nueve guías y reparto](guias/README.md) · [Conceptos comunes de defensa](docs/BASE-COMUN.md) · [Requisitos de entrega](docs/REQUISITOS-ENTREGA.md) · [API](docs/API.md) · [Verificación](docs/VERIFICACION.md) · [Guion de presentación](docs/PRESENTACION.md).
 
-## Estudiar y revisar
-
-[Las nueve guías](guias/README.md) reparten los 39 endpoints reales entre nueve responsables principales. Cada MD indica método/ruta, entrada, handler, consultas, respuestas, errores, pantalla que lo llama y su diagrama. El reparto es para estudiar y defender, no una certificación de autoría.
-
-[Mapa de operaciones UML](docs/METODOS-UML.md) · [Plan de reescritura](docs/PLAN.md) · [Verificación y límites](docs/VERIFICACION.md)
-
-Se conserva la licencia y procedencia del catálogo en `models/exercises/`. No se incluyen fotos/GIF del conjunto original ni los documentos privados del curso. No hay suites de tests ni comentarios explicativos en el código entregado; la explicación está en los MD.
-
-## Código para estudiar y defender
-
-La lógica usa bucles tradicionales, if/else y llamadas directas a Sequelize. Los formularios copian explícitamente los campos antes de actualizar React. Se conservan protecciones de cuentas, cifrado de datos existentes y guardados conjuntos con commit/rollback, explicados en las guías. El objetivo es código claro y comprobado, no añadir una arquitectura de servicios.
-
-- [Criterio del profesor y diferencias conservadas](docs/CRITERIO-DEL-PROFESOR.md)
-- [Pruebas de esta revisión y límites](docs/VERIFICACION.md)
-
-## Avance equilibrado entre los nueve
-
-El reparto actual conserva las responsabilidades de base del 50 % y da un paquete nuevo a cada integrante. Las guías describen tareas pendientes, endpoints, funciones, diagramas y casos de comprobación; no certifican autoría. El alcance de la entrega es flexible: el nombre histórico 75 no es una cuota rígida. Consultá el [plan actualizado](docs/PLAN.md) y las [nueve guías](guias/README.md).
-
-## Recuperación de contraseña
-
-El login incluye «Olvidé mi contraseña». El enlace vence en 15 minutos y se usa una sola vez. Al cambiar la contraseña se invalidan las sesiones anteriores. Configurá las variables SMTP y `APP_URL` de `.env.example`, ejecutá `npm run db:iniciar` para crear la tabla nueva y reiniciá el servidor. Sin SMTP, la API devuelve 503 y explica que el envío no está configurado. La configuración y el recorrido están en la guía de Gianluca.
-
-Esta ampliación posterior suma dos endpoints al corte anterior. Los porcentajes históricos y los 28 casos nominales describen el corte previo; no se recalcularon como si fueran mediciones de este cambio.
+«100 %» identifica el alcance funcional final. No es una promesa de nota máxima ni de ausencia total de errores. Se mantienen las exclusiones previas de DVH/DVV, limitadores y controles especiales de origen; esta configuración está preparada para demostración local. No publicar la instancia local con usuarios reales sin revisar despliegue y seguridad. La explicación de diferencias con UML/DER está en el alcance.

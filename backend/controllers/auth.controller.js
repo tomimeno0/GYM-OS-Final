@@ -4,7 +4,7 @@ const { Usuario, Sesion } = require("../models");
 const { hashToken } = require("./seguridad.controller");
 async function verificarSesion(req, res, next) {
   try {
-    const token = req.cookies.gymos75;
+    const token = req.cookies.gymos100;
     if (!token) {
       return res.status(401).json({
         message: "Iniciá sesión para continuar.",
@@ -31,6 +31,7 @@ async function verificarSesion(req, res, next) {
         message: "La cuenta no está habilitada.",
       });
     }
+    await require("./usuarios.controller").cargarRoles(usuario);
     req.user = usuario;
     next();
   } catch (error) {
@@ -47,6 +48,20 @@ async function verificarSesion(req, res, next) {
     });
   }
 }
+function verificarAdmin(req, res, next) {
+  if (!req.user.administrador)
+    return res.status(403).json({ message: "Solo administradores." });
+  next();
+}
+function verificarPermiso(permiso) {
+  return function (req, res, next) {
+    if (req.user.administrador || req.user.permisos.includes(permiso))
+      return next();
+    res.status(403).json({ message: "No tenés permiso para esta operación." });
+  };
+}
 module.exports = {
+  verificarPermiso,
+  verificarAdmin,
   verificarSesion,
 };

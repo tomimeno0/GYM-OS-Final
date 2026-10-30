@@ -1,3 +1,4 @@
+import DietaIA from "./DietaIA";
 import Confirmar from "../components/Confirmar";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -316,7 +317,7 @@ export default function Nutricion({ modo, usuario }) {
         />
       )}
       <p className="etiqueta">HÁBITOS QUE SUMAN</p>
-      <h1>{esDieta ? "Dietas manuales" : "Consumos y macros"}</h1>
+      <h1>{esDieta ? "Dietas" : "Consumos y macros"}</h1>
       <p className="muted">
         {esDieta
           ? "Planificar no significa consumir. Registrá después lo que realmente comiste."
@@ -369,6 +370,7 @@ export default function Nutricion({ modo, usuario }) {
           )}
         </section>
       )}
+      {esDieta && <DietaIA items={items} alGuardar={cargar} />}
       <form className="tarjeta" onSubmit={guardar}>
         <h2>
           {editando ? "Editar" : "Agregar"} {esDieta ? "dieta" : "consumo"}
@@ -665,10 +667,20 @@ export default function Nutricion({ modo, usuario }) {
             <>
               <p>{item.descripcion}</p>
               {item.comidas.map((c) => (
-                <p key={c.id}>
-                  {c.hora} · {c.nombre_comida} · {c.calorias} kcal · P{" "}
-                  {c.proteinas_g} g / C {c.carbohidratos_g} g / G {c.grasas_g} g
-                </p>
+                <div key={c.id}>
+                  <p>
+                    {c.hora} · {c.nombre_comida} · {c.calorias} kcal · P{" "}
+                    {c.proteinas_g} g / C {c.carbohidratos_g} g / G {c.grasas_g}{" "}
+                    g
+                  </p>
+                  <ul>
+                    {c.alimentos.map((a, i) => (
+                      <li key={i}>
+                        {a.nombre}: {a.cantidad} {a.unidad}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               ))}
             </>
           ) : (

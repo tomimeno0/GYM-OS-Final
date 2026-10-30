@@ -1,34 +1,30 @@
-# Verificación · edición 75
+# Verificación de la entrega final · 30/10/2026
 
-Revisión del recorte actual del 22 de octubre de 2026, con cuentas sintéticas y MySQL real. No certifica todas las alternativas de los diagramas ni ausencia de bugs.
+Entorno independiente del 75 %: MySQL 8.4, base gym_os_final, servidor Express en 5176, SMTP local real Mailpit y Cohere por API. Datos de prueba sintéticos. No se usaron respuestas fijas para presentar como real el proveedor de IA.
 
-## API y base
+## Resultado funcional
 
-Se completaron **82 solicitudes HTTP** y 13 comprobaciones agrupadas: registro/login, perfil, mediciones e historial, objetivos, rutinas, copia de ejercicios al entrenar, cierre de sesión y separación entre cuentas. Las escrituras funcionan sin la cabecera especial ni el control de origen retirados. Más de 40 intentos de ingreso incorrectos no activan un limitador. Las rutas eliminadas devuelven 404 para una sesión válida; no hay modelo ni tabla activa de esa función. El perfil público no revela hashes y los filtros de propiedad siguen funcionando.
+- Regresión de módulos heredados: **35 peticiones HTTP**, 10 comprobaciones de cuentas/perfil, cifrado de teléfono, medidas, metas, rutinas, entrenamientos, nutrición, cálculo, aislamiento, borrado y conversación con Cohere real.
+- Cierre: **53 peticiones HTTP**, nueve grupos de comprobaciones: JWT/roles, cambio de contraseña y revocación, recuperación con correo SMTP realmente recibido y enlace de uso único, usuarios CRUD/bloqueo/activación, último administrador protegido, roles/permisos efectivos, generación/adaptación real de dietas y persistencia de comidas, borrado en cascada y bitácora.
+- Las 53 rutas registradas tienen responsable único en las nueve guías. Ese conteo de endpoints es distinto del conteo de peticiones ejecutadas en las pruebas.
 
-Se verificó que una edición inválida no cambie la rutina, que no haya dos entrenamientos activos para una cuenta y que una medición posterior no altere el progreso de un objetivo completado.
+- Regresión de IA de rutinas: **6 peticiones HTTP**; generación y adaptación reales con Cohere, ejercicios persistidos, mismo id y cambio al día solicitado.
+- Total de los tres recorridos: **94 peticiones HTTP**.
 
-El chat respondió mediante Cohere real y conservó la conversación. Una segunda cuenta no pudo abrirla. Una prueba visual detectó una indicación de menú incorrecta: se incluyó el mapa real de navegación en el prompt y se volvió a comprobar con el proveedor la respuesta Entrenamientos / Tu historial. Eso no garantiza que un modelo nunca se equivoque. No hay respuesta simulada, modelo local ni reintento automático.
+## Correcciones encontradas
 
-Se verificaron también dietas manuales, consumo, cálculo de macros proporcional a la cantidad e imposibilidad de dar de baja una dieta ajena. Se retiró solamente la tabla correspondiente a la función eliminada; las demás tablas de esta edición se conservaron.
+La IA devolvió capitalización y acentos en enums y omitió campos en algunas respuestas. Se acotó el formato, se normalizan etiquetas admitidas y se envía un objeto JSON Schema para las dietas. Los rangos y las reglas de negocio continúan validándose en el backend, no se confía solo en el proveedor. Un timeout o respuesta inválida no se anuncia como propuesta guardada. Se verificó la configuración command-r-08-2024; es configurable en .env. El timeout es de 90 segundos y no hay reintentos automáticos.
 
-## Pantallas y ejecución
+## Revisión visual real
 
-Se recargó la aplicación compilada, cerró sesión y abrió el acceso nuevo: solo ofrece ingreso y registro, sin enlaces al flujo retirado. [Captura del acceso](capturas/acceso-recorte.png). Los recorridos de la edición anterior no sustituyen una certificación visual de todos los estados del recorte actual.
+Se abrió la aplicación en el navegador integrado. Se inició sesión administrativa, buscó una cuenta y guardó su edición desde el panel; se probó Objetivos sin medidas y mostró el rechazo esperado. En Dietas se guardó una comida desde el formulario: 50 g de un alimento de 400 kcal/100 g produjo 200 kcal, 5 g de proteína, 30 g de carbohidratos y 4 g de grasa. Se comprobó que la lista presenta alimentos/cantidades y el nuevo formulario IA. Las capturas locales públicas solo contienen datos ficticios y están en capturas/.
 
-Ambos proyectos compilaron. npm audit no informó vulnerabilidades conocidas en backend y frontend en esta revisión. Vite mantiene el aviso de archivo principal superior a 500 kB; no es un error de compilación. Se verifican enlaces de documentación, nueve guías por versión y ausencia de secretos y suites de tests en los archivos versionados. No se prueba producción ni concurrencia masiva; al quitar los controles solicitados, no debe exponerse este servidor como un servicio público.
+La inspección visual fue en el tamaño real del navegador integrado; no constituye una prueba exhaustiva de todos los dispositivos ni de accesibilidad.
 
+## Construcción y documentación
 
-## Revisión de simplificación · 22 de octubre de 2026
+Build React/Vite correcto. npm audit de dependencias de ejecución de backend y frontend: cero vulnerabilidades conocidas al revisar. Vite conserva un aviso de bundle principal superior a 500 kB; no bloquea compilación ni fue ocultado. Nueve guías, nueve diagramas, 54 puntos de práctica individual y 254 enlaces locales verificados. Los scripts de prueba quedan locales e ignorados; el repositorio incluye el informe, no una suite adicional contra el pedido previo de retirar tests.
 
-Esta revisión cambia la forma de escribir la lógica, sin ampliar el alcance ni alterar los endpoints. Se recompiló el frontend y se comprobó la sintaxis del backend. El build termina correctamente; sigue mostrando la advertencia de tamaño del paquete de gráficos, que no impide ejecutarlo. No se añadió carga dinámica para resolverla porque agregaría otra técnica a estudiar.
+## Límites de lo comprobado
 
-- Prueba de recorridos: **82 solicitudes HTTP** correctas, incluidas respuestas esperadas de rechazo, cuentas, medidas, objetivos, rutinas, entrenamientos, aislamiento entre usuarios y Cohere real.
-- Comparación con la implementación anterior: **3530 casos** de cálculos, validaciones y errores. Incluye metas sin mediciones, metas cerradas y casos de división por cero.
-- Pruebas adicionales: **16 solicitudes HTTP** para orden de detalles, duplicados, cierre incompleto, conversación y seguimiento.
-- Fallo controlado en MySQL: se hizo fallar la inserción del segundo ejercicio al crear y al editar una rutina. Se verificó que no quedaran cabecera o detalles parciales y que la edición anterior se conservara. El trigger temporal de prueba se retiró.
-- La conversación nueva y el seguimiento se probaron contra Cohere real; no se sustituyó el proveedor por una respuesta fija.
-- Se probó además generación y adaptación de una rutina con Cohere real: persistencia de ejercicios, conservación del id al adaptar y cambio al día solicitado. El proveedor externo puede fallar o limitar solicitudes fuera de esta prueba.
-- Revisión de interfaz real: acceso; dieta con cambios de cantidad, agregado y eliminación de alimentos/comidas; guardado y edición; recálculo de 400 a 200 kcal al pasar de 100 a 50 g; consumo y suma diaria.
-
-Las pruebas se ejecutaron con cuentas y datos sintéticos en las bases de cada edición. Los auxiliares y credenciales de prueba quedan fuera del repositorio. No se alteraron la base del proyecto completo ni las bases históricas. El repaso no demuestra ausencia total de errores, aprobación de producción ni cobertura visual de todas las combinaciones posibles. Las guías siguen teniendo nueve responsables, con enlaces actualizados a funciones reales.
+Mailpit demuestra SMTP y recepción local; no demuestra entrega a Gmail/Outlook. Esa entrega requiere un remitente real. Cohere puede limitar o fallar fuera de esta prueba. No se probaron producción, concurrencia masiva ni recuperación ante pérdida del volumen. Se mantienen explícitas las exclusiones del alcance y no se certifica que un alumno ya domina el código por haber recibido su guía. Las comprobaciones no garantizan ausencia absoluta de errores.

@@ -1,41 +1,43 @@
-# Tomás Menossi · próximo avance
+# Tomás Menossi · guía de la entrega final
 
-**Tarea nueva:** Generación de rutinas con IA.
+**Responsabilidad:** Inteligencia artificial y generación de planes.
 
-**Estado: pendiente de trabajo y verificación individual.** No es una declaración de que ya lo programaste. Se conserva tu responsabilidad de base del 50 % y se añade un recorrido concreto del incremento.
+Conservás chat, historial y generación de rutinas. Sumás generación de dieta nueva y el contrato común de Cohere; Joaquín se encarga del recorrido de adaptación.
 
-## Qué tenés que hacer ahora
+Este documento asigna estudio, revisión y defensa. No certifica autoría pasada. Antes de exponer, completá las comprobaciones de tu recorrido.
 
-Recorrer creación de propuesta desde preferencias hasta rutina guardada. Mantener la clave fuera de React, el consentimiento y los errores reales. Revisar formato y transacción con Joaquín; conservar tu chat del 50 %.
+## Primero: base común que puede preguntar el profesor
 
-## Mapa de tu avance
+Leé [BASE-COMUN.md](../docs/BASE-COMUN.md). Son conceptos breves que todos deben entender: carpetas, login, Bcrypt, JWT, middleware, CORS, useState y useEffect. El PDF permite preguntas sobre código de compañeros; no hay garantía de que limite la defensa a este módulo. El detalle profundo que sigue es tu parte.
+
+## Mapa de tu módulo
 
 ```mermaid
-flowchart LR
-  U["Formulario o acción: Generación de rutinas con IA"]
-  U --> E0["POST /api/ia/rutinas"]
-  E0 --> H0["generarRutinaIA"]
-  H0 --> R["Validación, MySQL o Cohere y respuesta"]
-  R --> C["Mostrar resultado y comprobarlo"]
+flowchart TD
+  A["DietaIA.jsx: formulario o acción"] --> B["Axios: /api/ia/dietas"]
+  B --> C["Express: sesión y permiso cuando corresponde"]
+  C --> D["dietas-ia.controller.js: validar y consultar"]
+  D --> E["Sequelize y MySQL; proveedor cuando corresponde"]
+  E --> F["Respuesta HTTP y estado React"]
 ```
 
 ## Tus endpoints y continuidad
 
 | Etapa | Método y ruta | Handler real |
 | --- | --- | --- |
-| Base del 50 % | `GET /api/ia/estado` | [estadoIA](../controllers/ia.controller.js#L452) |
-| Base del 50 % | `POST /api/ia/consulta` | [responderConsulta](../controllers/ia.controller.js#L291) |
-| Base del 50 % | `GET /api/ia/conversaciones` | [listarConversaciones](../controllers/ia.controller.js#L404) |
-| Base del 50 % | `GET /api/ia/conversaciones/:id` | [verConversacion](../controllers/ia.controller.js#L420) |
-| Avance nuevo | `POST /api/ia/rutinas` | [generarRutinaIA](../controllers/ia.controller.js#L88) |
+| Base del 50 % | `GET /api/ia/estado` | [estadoIA](../backend/controllers/ia.controller.js#L452) |
+| Base del 50 % | `POST /api/ia/consulta` | [responderConsulta](../backend/controllers/ia.controller.js#L291) |
+| Base del 50 % | `GET /api/ia/conversaciones` | [listarConversaciones](../backend/controllers/ia.controller.js#L404) |
+| Base del 50 % | `GET /api/ia/conversaciones/:id` | [verConversacion](../backend/controllers/ia.controller.js#L420) |
+| Avance nuevo | `POST /api/ia/rutinas` | [generarRutinaIA](../backend/controllers/ia.controller.js#L88) |
 
 ## Funciones concretas del avance
 
 | Función | Qué parte recorrés |
 | --- | --- |
-| [generarRutina](../controllers/ia.controller.js#L52) | Formato y validación de la propuesta; compartida con Joaquín. |
-| [generarRutinaIA](../controllers/ia.controller.js#L88) | Genera un plan nuevo sin id; contexto y persistencia compartidos con adaptación. |
-| [generarConIA](../controllers/ia.controller.js#L13) | Llamada real a Cohere y validación del JSON. |
+| [generarRutina](../backend/controllers/ia.controller.js#L52) | Formato y validación de la propuesta; compartida con Joaquín. |
+| [generarRutinaIA](../backend/controllers/ia.controller.js#L88) | Genera un plan nuevo sin id; contexto y persistencia compartidos con adaptación. |
+| [generarConIA](../backend/controllers/ia.controller.js#L13) | Llamada real a Cohere y validación del JSON. |
 
 Los helpers son funciones internas, no endpoints adicionales. Si una función sirve a POST y PUT o a generación y adaptación, se revisa entre los dos responsables. No hay que duplicarla ni separarla artificialmente para aparentar más código.
 
@@ -121,24 +123,40 @@ Los helpers son funciones internas, no endpoints adicionales. Si una función si
 
 **Cómo mostrarlo.** Generar con datos sintéticos, abrir Rutinas y revisar la propuesta; explicar la separación entre este endpoint y el chat.
 
-## Cuándo está terminado tu bloque
 
-- [ ] Sin consentimiento no se envía contexto.
-- [ ] Una creación válida obtiene un id nuevo y detalles persistidos.
-- [ ] Sin proveedor no se fabrica una respuesta ni se guarda una rutina parcial.
-- [ ] Explicar el recorrido desde el input hasta la respuesta, sin leer el código palabra por palabra.
-- [ ] Registrar qué revisión, cambio o comprobación hiciste realmente; si hay commit, usar la identidad real.
+## Lo que se agrega en el cierre
 
-## Tamaño previsto y trabajo compartido
+`generarConIA(messages, maxTokens, esquema)`: POST real a Cohere, credencial solo en backend, límite de espera de 90 segundos, lectura de bloques de texto y JSON.parse; errores nunca se convierten en respuestas inventadas. `generarDieta` construye el contrato JSON y el contexto mínimo. `generarDietaIA` valida consentimiento, confirmación, medidas, objetivo y límites de la propuesta; delega en `actualizarDieta` la persistencia validada. Antes de guardar, se normaliza tipo de comida a minúsculas y porción a porcion; no se inventan cantidades ni se convierten textos arbitrarios en números. `formatoDieta` es un objeto JSON Schema: indica nombres de campos obligatorios, tipos (string/number/integer), listas y valores permitidos. Se manda en response_format.schema para pedir esa estructura a Cohere; no ejecuta funciones ni reemplaza la validación local. Otros recorridos usan JSON sin ese esquema. Es el contrato del JSON de la respuesta externa, no una capa de servicios. La validación de nutrientes y los cálculos siguen siendo del servidor. El chat solo conversa: no ejecuta acciones sobre la cuenta. Las funciones de IA se coordinan con Joaquín; no duplicar transporte.
 
-Como referencia, este paquete cubre **9.28 %** de las 1.702 líneas nuevas/reemplazadas del incremento medido. Es cobertura asignada para revisar/trabajar, no un porcentaje de programación ya hecho. No mide dificultad ni tiempo y se reajusta si al trabajar aparece una diferencia de carga.
+### Rutas nuevas que defendés
 
-[Plan y límites del cálculo](../docs/PLAN.md). La meta es cerca de 11 % por persona, con margen; el alcance de entrega puede quedar por encima o por debajo del nombre histórico 75. No se inflan líneas ni se atribuye código intacto como una mejora.
+| Método y ruta | Función | Archivo |
+| --- | --- | --- |
+| `POST /api/ia/dietas` | `generarDietaIA` | [dietas-ia.controller.js](../backend/controllers/dietas-ia.controller.js) |
 
-## Lectura del código
+## Preguntas de defensa con respuesta orientativa
 
-Pantalla React → ruta Express → controlador → Sequelize → MySQL. req.params trae el id; req.query, filtros; req.body, JSON; req.user, la cuenta autenticada. Las consultas deben restringir el propietario. Axios envía pedidos desde React y el JSON recibido está en respuesta.data. Un 204 no tiene JSON.
+**¿La IA corre en la Mac?** No. El backend usa fetch con la API de Cohere. La clave se lee de .env y no viaja al frontend.
 
-El backend usa for tradicional, if/else, async/await y try/catch. En JSX, map dibuja listas. Las transacciones con commit/rollback evitan guardados parciales; el cifrado, hash y sesión conservan cuentas y datos existentes. La clave de Cohere permanece en el servidor. No se reintroducen los temas retirados ni capas de servicios.
+**¿Por qué validar el JSON de Cohere?** Un proveedor puede responder algo incompleto o fuera de contrato. Se validan tipos, límites, comidas y alimentos antes de MySQL.
 
-[Criterio del profesor y diferencias conservadas](../docs/CRITERIO-DEL-PROFESOR.md).
+**¿Cómo se distingue una respuesta real de una simulada?** El recorrido usa la API real y responde error si falla. La validación documenta aparte cualquier transporte simulado en pruebas, sin presentarlo como proveedor real.
+
+## Práctica equivalente para los nueve
+
+- [ ] Recorrer una acción desde el componente hasta MySQL y volver con la respuesta.
+- [ ] Mostrar un caso correcto con datos de prueba y persistencia comprobada.
+- [ ] Mostrar un caso de datos inválidos y explicar el código HTTP.
+- [ ] Mostrar un caso de autorización, cancelación o estado no permitido; no debe cambiar información.
+- [ ] Explicar el formulario, las funciones principales, las librerías y el diagrama sin leer código palabra por palabra.
+- [ ] Hacer una modificación pequeña y explicar el resultado (por ejemplo un texto, un límite válido o un campo).
+
+## Ensayo individual de 15–20 minutos
+
+2 minutos: ubicar backend/client y tu componente. 5 minutos: seguir una petición propia. 4 minutos: explicar modelo y validaciones. 4 minutos: demostrar éxito/error/cancelación. 3 minutos: responder las preguntas anteriores y los conceptos comunes. No memorizar respuestas sobre funciones que no revisaste.
+
+## Archivos compartidos y continuidad
+
+`backend/index.js` monta las rutas y sirve React; `backend/config/db.js` conecta Sequelize; `backend/models/index.js` relaciona modelos; `client/src/App.jsx` decide navegación y sesión. La base de estos archivos se revisa entre todos. Compartir un archivo no significa que cada persona deba defender todas sus ramas internas: ubicá tu método y seguí sus llamadas.
+
+El reparto final sustituye las estimaciones de carga del corte 75. Cada integrante tiene un paquete completo y la misma lista de comprobaciones; no son porcentajes medidos de autoría ni horas reales.

@@ -93,7 +93,10 @@ Conversacion.hasMany(Mensaje, {
 Mensaje.belongsTo(Conversacion, { foreignKey: "conversacion_id" });
 Bitacora.belongsTo(Usuario, { foreignKey: "usuario_id", onDelete: "SET NULL" });
 
-Usuario.hasMany(Recuperacion, { foreignKey: "usuario_id", onDelete: "CASCADE" });
+Usuario.hasMany(Recuperacion, {
+  foreignKey: "usuario_id",
+  onDelete: "CASCADE",
+});
 Recuperacion.belongsTo(Usuario, { foreignKey: "usuario_id" });
 
 module.exports = {

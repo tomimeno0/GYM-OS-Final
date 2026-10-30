@@ -1,15 +1,17 @@
-SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT;
-SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS;
-SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION;
-SET NAMES utf8mb4;
-SET @OLD_TIME_ZONE=@@TIME_ZONE;
-SET TIME_ZONE='+00:00';
-SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
-SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
-SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO';
-SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8mb4;
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+DROP TABLE IF EXISTS `bitacora`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `bitacora` (
   `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `dvh` varchar(64) NOT NULL DEFAULT '',
@@ -23,9 +25,10 @@ CREATE TABLE `bitacora` (
   KEY `usuario_id` (`usuario_id`),
   CONSTRAINT `bitacora_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-SET character_set_client = @saved_cs_client;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `comidas_consumidas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `comidas_consumidas` (
   `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `dvh` varchar(64) NOT NULL DEFAULT '',
@@ -44,9 +47,10 @@ CREATE TABLE `comidas_consumidas` (
   KEY `usuario_id` (`usuario_id`),
   CONSTRAINT `comidas_consumidas_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-SET character_set_client = @saved_cs_client;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `conversaciones`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `conversaciones` (
   `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `dvh` varchar(64) NOT NULL DEFAULT '',
@@ -58,9 +62,10 @@ CREATE TABLE `conversaciones` (
   KEY `usuario_id` (`usuario_id`),
   CONSTRAINT `conversaciones_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-SET character_set_client = @saved_cs_client;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `dieta_comidas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `dieta_comidas` (
   `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `dvh` varchar(64) NOT NULL DEFAULT '',
@@ -80,9 +85,10 @@ CREATE TABLE `dieta_comidas` (
   KEY `dieta_id` (`dieta_id`),
   CONSTRAINT `dieta_comidas_ibfk_1` FOREIGN KEY (`dieta_id`) REFERENCES `dietas` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-SET character_set_client = @saved_cs_client;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `dietas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `dietas` (
   `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `dvh` varchar(64) NOT NULL DEFAULT '',
@@ -104,9 +110,10 @@ CREATE TABLE `dietas` (
   CONSTRAINT `dietas_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `dietas_ibfk_2` FOREIGN KEY (`objetivo_id`) REFERENCES `objetivos` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-SET character_set_client = @saved_cs_client;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `entrenamiento_ejercicios`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `entrenamiento_ejercicios` (
   `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `dvh` varchar(64) NOT NULL DEFAULT '',
@@ -123,9 +130,10 @@ CREATE TABLE `entrenamiento_ejercicios` (
   KEY `entrenamiento_id` (`entrenamiento_id`),
   CONSTRAINT `entrenamiento_ejercicios_ibfk_1` FOREIGN KEY (`entrenamiento_id`) REFERENCES `entrenamientos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-SET character_set_client = @saved_cs_client;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `entrenamientos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `entrenamientos` (
   `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `dvh` varchar(64) NOT NULL DEFAULT '',
@@ -146,9 +154,10 @@ CREATE TABLE `entrenamientos` (
   CONSTRAINT `entrenamientos_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `entrenamientos_ibfk_2` FOREIGN KEY (`rutina_id`) REFERENCES `rutinas` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-SET character_set_client = @saved_cs_client;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `mediciones_fisicas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mediciones_fisicas` (
   `usuario_inicial` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
@@ -169,9 +178,10 @@ CREATE TABLE `mediciones_fisicas` (
   KEY `usuario_id` (`usuario_id`),
   CONSTRAINT `mediciones_fisicas_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-SET character_set_client = @saved_cs_client;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `mensajes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mensajes` (
   `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `dvh` varchar(64) NOT NULL DEFAULT '',
@@ -183,9 +193,10 @@ CREATE TABLE `mensajes` (
   KEY `conversacion_id` (`conversacion_id`),
   CONSTRAINT `mensajes_ibfk_1` FOREIGN KEY (`conversacion_id`) REFERENCES `conversaciones` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-SET character_set_client = @saved_cs_client;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `objetivos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `objetivos` (
   `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `dvh` varchar(64) NOT NULL DEFAULT '',
@@ -203,9 +214,9 @@ CREATE TABLE `objetivos` (
   `fecha_inicio` date NOT NULL,
   `fecha_fin_estimada` date DEFAULT NULL,
   `fecha_completado` date DEFAULT NULL,
+  `fecha_cierre` datetime(3) DEFAULT NULL,
   `usuario_activo` varchar(36) DEFAULT NULL,
   `valor_inicial` decimal(8,2) DEFAULT NULL,
-  `fecha_cierre` datetime(3) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `usuario_activo` (`usuario_activo`),
   KEY `usuario_id` (`usuario_id`),
@@ -213,9 +224,24 @@ CREATE TABLE `objetivos` (
   CONSTRAINT `objetivos_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `objetivos_ibfk_2` FOREIGN KEY (`medicion_inicio_id`) REFERENCES `mediciones_fisicas` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-SET character_set_client = @saved_cs_client;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `recuperaciones`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `recuperaciones` (
+  `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `usuario_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `token_hash` varchar(64) NOT NULL,
+  `fecha_expiracion` datetime(3) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `usuario_id` (`usuario_id`),
+  UNIQUE KEY `token_hash` (`token_hash`),
+  CONSTRAINT `recuperaciones_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `roles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `roles` (
   `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `dvh` varchar(64) NOT NULL DEFAULT '',
@@ -227,9 +253,10 @@ CREATE TABLE `roles` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `nombre` (`nombre`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-SET character_set_client = @saved_cs_client;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `rutina_ejercicios`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `rutina_ejercicios` (
   `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `dvh` varchar(64) NOT NULL DEFAULT '',
@@ -248,9 +275,10 @@ CREATE TABLE `rutina_ejercicios` (
   KEY `rutina_id` (`rutina_id`),
   CONSTRAINT `rutina_ejercicios_ibfk_1` FOREIGN KEY (`rutina_id`) REFERENCES `rutinas` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-SET character_set_client = @saved_cs_client;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `rutinas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `rutinas` (
   `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `dvh` varchar(64) NOT NULL DEFAULT '',
@@ -268,9 +296,10 @@ CREATE TABLE `rutinas` (
   CONSTRAINT `rutinas_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `rutinas_ibfk_2` FOREIGN KEY (`objetivo_id`) REFERENCES `objetivos` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-SET character_set_client = @saved_cs_client;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `sesiones`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sesiones` (
   `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `dvh` varchar(64) NOT NULL DEFAULT '',
@@ -283,9 +312,10 @@ CREATE TABLE `sesiones` (
   KEY `usuario_id` (`usuario_id`),
   CONSTRAINT `sesiones_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-SET character_set_client = @saved_cs_client;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `usuario_roles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `usuario_roles` (
   `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `dvh` varchar(64) NOT NULL DEFAULT '',
@@ -298,9 +328,10 @@ CREATE TABLE `usuario_roles` (
   CONSTRAINT `usuario_roles_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `usuario_roles_ibfk_2` FOREIGN KEY (`rol_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-SET character_set_client = @saved_cs_client;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `usuarios`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `usuarios` (
   `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `dvh` varchar(64) NOT NULL DEFAULT '',
@@ -319,13 +350,13 @@ CREATE TABLE `usuarios` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-SET character_set_client = @saved_cs_client;
-SET TIME_ZONE=@OLD_TIME_ZONE;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
-SET SQL_MODE=@OLD_SQL_MODE;
-SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
-SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
-SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT;
-SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS;
-SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION;
-SET SQL_NOTES=@OLD_SQL_NOTES;
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;

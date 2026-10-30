@@ -1,42 +1,44 @@
-# Gianluca Pizarro · próximo avance
+# Gianluca Pizarro · guía de la entrega final
 
-**Tarea nueva:** Alimentos, validación nutricional y eliminación de consumos.
+**Responsabilidad:** Cuentas, login y recuperación.
 
-**Estado: pendiente de trabajo y verificación individual.** No es una declaración de que ya lo programaste. Se conserva tu responsabilidad de base del 50 % y se añade un recorrido concreto del incremento.
+Conservás registro/login/logout y la validación de alimentos del 75 %. En el cierre preparás recuperación por SMTP real, contraseña temporal de un uso, permisos en la sesión y arranque de cuentas.
 
-## Qué tenés que hacer ahora
+Este documento asigna estudio, revisión y defensa. No certifica autoría pasada. Antes de exponer, completá las comprobaciones de tu recorrido.
 
-Validar alimento, unidad, cantidad y metas; seguir la fórmula de nutrientes; implementar/revisar el borrado confirmado de un consumo y comprobar que los totales disminuyen. Se mantiene fuera rate limiting. La recuperación por correo se incorpora en la ampliación al final de esta guía.
+## Primero: base común que puede preguntar el profesor
 
-## Mapa de tu avance
+Leé [BASE-COMUN.md](../docs/BASE-COMUN.md). Son conceptos breves que todos deben entender: carpetas, login, Bcrypt, JWT, middleware, CORS, useState y useEffect. El PDF permite preguntas sobre código de compañeros; no hay garantía de que limite la defensa a este módulo. El detalle profundo que sigue es tu parte.
+
+## Mapa de tu módulo
 
 ```mermaid
-flowchart LR
-  U["Formulario o acción: Alimentos, validación nutricional y eliminación de consumos"]
-  U --> E0["DELETE /api/consumos/:id"]
-  E0 --> H0["eliminarConsumo"]
-  H0 --> R["Validación, MySQL o Cohere y respuesta"]
-  R --> C["Mostrar resultado y comprobarlo"]
+flowchart TD
+  A["Recuperar.jsx: formulario o acción"] --> B["Axios: /api/recuperar-password"]
+  B --> C["Express: sesión y permiso cuando corresponde"]
+  C --> D["recuperacion.controller.js: validar y consultar"]
+  D --> E["Sequelize y MySQL; proveedor cuando corresponde"]
+  E --> F["Respuesta HTTP y estado React"]
 ```
 
 ## Tus endpoints y continuidad
 
 | Etapa | Método y ruta | Handler real |
 | --- | --- | --- |
-| Base del 50 % | `POST /api/registro` | [registrarUsuario](../controllers/usuarios.controller.js#L56) |
-| Base del 50 % | `POST /api/login` | [iniciarSesion](../controllers/usuarios.controller.js#L156) |
-| Base del 50 % | `POST /api/logout` | [cerrarSesion](../controllers/usuarios.controller.js#L208) |
-| Base del 50 % | `GET /api/salud` | [handler de salud](../index.js#L22) |
-| Avance nuevo | `DELETE /api/consumos/:id` | [eliminarConsumo](../controllers/nutricion.controller.js#L472) |
+| Base del 50 % | `POST /api/registro` | [registrarUsuario](../backend/controllers/usuarios.controller.js#L70) |
+| Base del 50 % | `POST /api/login` | [iniciarSesion](../backend/controllers/usuarios.controller.js#L170) |
+| Base del 50 % | `POST /api/logout` | [cerrarSesion](../backend/controllers/usuarios.controller.js#L223) |
+| Base del 50 % | `GET /api/salud` | [handler de salud](../backend/index.js#L22) |
+| Avance nuevo | `DELETE /api/consumos/:id` | [eliminarConsumo](../backend/controllers/nutricion.controller.js#L502) |
 
 ## Funciones concretas del avance
 
 | Función | Qué parte recorrés |
 | --- | --- |
-| [calcularMacros](../controllers/nutricion.controller.js#L4) | Recorre y suma nutrientes; por 100 g/ml o por porción. |
-| [datosComida](../controllers/nutricion.controller.js#L79) | Valida nombre/tipo y obtiene los nutrientes de la comida. |
-| [actualizarDieta](../controllers/nutricion.controller.js#L146) | Tu tramo compartido es la validación de metas numéricas y calorías enteras; Iván/Paulo guardan la dieta. |
-| [eliminarConsumo](../controllers/nutricion.controller.js#L472) | Borra solo el consumo propio confirmado. |
+| [calcularMacros](../backend/controllers/nutricion.controller.js#L10) | Recorre y suma nutrientes; por 100 g/ml o por porción. |
+| [datosComida](../backend/controllers/nutricion.controller.js#L85) | Valida nombre/tipo y obtiene los nutrientes de la comida. |
+| [actualizarDieta](../backend/controllers/nutricion.controller.js#L152) | Tu tramo compartido es la validación de metas numéricas y calorías enteras; Iván/Paulo guardan la dieta. |
+| [eliminarConsumo](../backend/controllers/nutricion.controller.js#L502) | Borra solo el consumo propio confirmado. |
 
 Los helpers son funciones internas, no endpoints adicionales. Si una función sirve a POST y PUT o a generación y adaptación, se revisa entre los dos responsables. No hay que duplicarla ni separarla artificialmente para aparentar más código.
 
@@ -98,7 +100,7 @@ Los helpers son funciones internas, no endpoints adicionales. Si una función si
 
 **Qué valida o decide.** No es una pantalla de negocio ni comprueba el estado de Cohere.
 
-**Respuesta correcta.** `200` → `{estado: "ok", version: "50" o "75"}`.
+**Respuesta correcta.** `200` → `{estado: "ok", version: "100"}`.
 
 **Errores propios.** `503` si no puede conectar a la base.
 
@@ -122,81 +124,41 @@ Los helpers son funciones internas, no endpoints adicionales. Si una función si
 
 **Cómo mostrarlo.** Eliminar solo un consumo sintético y explicar por qué disminuye el total diario.
 
-## Cuándo está terminado tu bloque
 
-- [ ] Registrar 50 g a 400 kcal/100 g: el servidor calcula 200 kcal.
-- [ ] Rechazar cantidades inválidas; no confiar en un total enviado desde React.
-- [ ] Cancelar eliminación conserva el consumo; confirmar lo borra y disminuye el total.
-- [ ] Explicar el recorrido desde el input hasta la respuesta, sin leer el código palabra por palabra.
-- [ ] Registrar qué revisión, cambio o comprobación hiciste realmente; si hay commit, usar la identidad real.
+## Lo que se agrega en el cierre
 
-## Tamaño previsto y trabajo compartido
+`recuperarPassword`: valida email y configuración, busca cuenta activa, guarda SHA-256 del token con vencimiento y envía el enlace por SMTP usando Nodemailer. `restablecerPassword`: bloquea la solicitud durante la transacción, verifica vencimiento, cambia bcrypt, elimina sesiones y el token. `cargarRoles` incorpora roles y permisos en la respuesta pública de login; `verificarSesion` verifica JWT y sesión persistida, no solo la firma. El JWT llega en cookie HttpOnly, React no lo lee. En Mailpit se comprueba entrega local, no envío a Gmail. Un envío fallido da 503 y no devuelve un enlace al solicitante.
 
-Como referencia, este paquete cubre **11.01 %** de las 1.702 líneas nuevas/reemplazadas del incremento medido. Es cobertura asignada para revisar/trabajar, no un porcentaje de programación ya hecho. No mide dificultad ni tiempo y se reajusta si al trabajar aparece una diferencia de carga.
+### Rutas nuevas que defendés
 
-[Plan y límites del cálculo](../docs/PLAN.md). La meta es cerca de 11 % por persona, con margen; el alcance de entrega puede quedar por encima o por debajo del nombre histórico 75. No se inflan líneas ni se atribuye código intacto como una mejora.
-
-## Lectura del código
-
-Pantalla React → ruta Express → controlador → Sequelize → MySQL. req.params trae el id; req.query, filtros; req.body, JSON; req.user, la cuenta autenticada. Las consultas deben restringir el propietario. Axios envía pedidos desde React y el JSON recibido está en respuesta.data. Un 204 no tiene JSON.
-
-El backend usa for tradicional, if/else, async/await y try/catch. En JSX, map dibuja listas. Las transacciones con commit/rollback evitan guardados parciales; el cifrado, hash y sesión conservan cuentas y datos existentes. La clave de Cohere permanece en el servidor. No se reintroducen los temas retirados ni capas de servicios.
-
-[Criterio del profesor y diferencias conservadas](../docs/CRITERIO-DEL-PROFESOR.md).
-
-## Recuperación de contraseña · ampliación solicitada
-
-Esta función vuelve a incorporarse por pedido de Tomás. Te corresponde como responsable de registro, login y sesiones. Es responsabilidad de estudio y revisión, no atribución de autoría.
-
-### Mapa del recorrido
-
-```mermaid
-flowchart TD
-  A["Login: Olvidé mi contraseña"] --> B["POST /api/recuperar-password: email"]
-  B --> C["Buscar cuenta activa y crear token aleatorio"]
-  C --> D["MySQL: guardar solo hash y vencimiento"]
-  D --> E["Nodemailer: enviar enlace por SMTP"]
-  E --> F["Usuario abre /restablecer con token"]
-  F --> G["POST /api/restablecer-password: token y password"]
-  G --> H["Comprobar token y plazo con bloqueo de fila"]
-  H --> I["Transacción: bcrypt, borrar sesiones y token"]
-  I --> J["Volver al login con contraseña nueva"]
-```
-
-### Archivos y funciones que tenés que entender
-
-- `routes/usuarios.routes.js` agrega dos rutas públicas de recuperación. No requieren sesión porque justamente el usuario perdió el acceso.
-- `controllers/recuperacion.controller.js`, `solicitarRecuperacion(req, res)`: valida el correo, verifica configuración SMTP y busca un usuario activo. `tokenNuevo()` crea un valor aleatorio de 32 bytes; `hashToken()` calcula su SHA-256. `Recuperacion.upsert()` crea o reemplaza la solicitud de ese usuario y fija 15 minutos de vigencia. Nodemailer crea el transporte y `sendMail()` envía el enlace. Si el envío falla, elimina esa solicitud y devuelve 503. No devuelve el token al navegador ni revela si el correo existe cuando la solicitud se procesa correctamente.
-- `restablecerPassword(req, res)`: recibe `token` y `password`, valida sus formatos y calcula bcrypt. Busca el hash del token dentro de una transacción con bloqueo de fila, comprueba el vencimiento y la cuenta activa, cambia el hash de contraseña, elimina las sesiones del usuario y borra la solicitud. `commit()` confirma las tres operaciones juntas; `rollback()` las deshace si ocurre un error. El bloqueo impide que dos solicitudes simultáneas usen el mismo enlace.
-- `models/Recuperacion.model.js`: tabla `recuperaciones`, con `id`, `usuario_id` único, `token_hash` único y `fecha_expiracion`. Nunca guarda la contraseña ni el token de recuperación en texto plano. `models/index.js` relaciona la solicitud con el usuario y la elimina en cascada al borrar la cuenta.
-- `client/src/pages/Recuperar.jsx`, `enviar(e)`: maneja la solicitud del correo o el envío de la contraseña nueva con Axios. Comprueba que ambas contraseñas coincidan, muestra errores, desactiva el botón durante el envío y limpia el usuario de React después del cambio. Lee el token del fragmento `#` del enlace y lo retira de la barra de direcciones; se envía solo en el body de la petición. Un enlace sin token no permite guardar.
-- `client/src/App.jsx`: publica `/recuperar` y `/restablecer`. `Acceso.jsx`: enlace «Olvidé mi contraseña».
-
-### Endpoints, entradas y respuestas
-
-| Método y ruta | Entrada JSON | Resultado |
+| Método y ruta | Función | Archivo |
 | --- | --- | --- |
-| `POST /api/recuperar-password` | `email` | 200 con mensaje genérico; 400 por formato; 503 sin SMTP configurado o si falla el envío. |
-| `POST /api/restablecer-password` | `token`, `password` | 200 si cambia; 400 por enlace inválido, usado o vencido, o contraseña inválida; 500 si falla el guardado. |
+| `POST /api/recuperar-password` | `recuperarPassword` | [recuperacion.controller.js](../backend/controllers/recuperacion.controller.js) |
+| `POST /api/restablecer-password` | `restablecerPassword` | [recuperacion.controller.js](../backend/controllers/recuperacion.controller.js) |
 
-Se mantienen los mismos límites de contraseña del registro: mínimo 10 caracteres y máximo 72 bytes UTF-8. Recuperar no inicia sesión automáticamente: el usuario vuelve al login. Todas las sesiones anteriores quedan invalidadas.
+## Preguntas de defensa con respuesta orientativa
 
-### Librerías y configuración
+**¿Bcrypt cifra o hashea?** Hashea de forma irreversible con salt; se compara con bcrypt.compare. No se descifra una contraseña.
 
-Express maneja rutas y respuestas; Sequelize consulta MySQL y agrupa los cambios; `node:crypto` genera tokens y hashes; bcrypt protege la contraseña; React mantiene el formulario; Axios llama a la API. **Nodemailer** es la biblioteca nueva para enviar correo mediante SMTP, dentro del controlador, sin agregar una capa de servicios.
+**¿Por qué no guardar el token de recuperación en texto plano?** La base guarda su SHA-256; solo quien recibió el token original puede usar el enlace. Expira y se elimina después del uso.
 
-Configurar en `.env`: `APP_URL` (dirección real de la aplicación), `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_FROM` y, si el proveedor requiere autenticación, `SMTP_USER` y `SMTP_PASSWORD`. Para puerto 465 se usa `SMTP_SECURE=true`; para 587, `false` con STARTTLS del servidor. No subir credenciales al repositorio. Ver [documentación oficial de Nodemailer](https://nodemailer.com/smtp).
+**¿JWT basta para seguir conectado?** No: además de firma y expiración se busca Sesion y una cuenta activa. Así logout, bloqueo y cambio de contraseña revocan acceso.
 
-La tabla se crea con `npm run db:iniciar`, que no borra las tablas existentes. En esta Mac ya se creó solo la tabla nueva. **No se configuró una cuenta SMTP real:** hasta hacerlo, la pantalla informa que el envío no está disponible. No se simula un correo enviado.
+## Práctica equivalente para los nueve
 
-### Qué demostrar y qué explicar
+- [ ] Recorrer una acción desde el componente hasta MySQL y volver con la respuesta.
+- [ ] Mostrar un caso correcto con datos de prueba y persistencia comprobada.
+- [ ] Mostrar un caso de datos inválidos y explicar el código HTTP.
+- [ ] Mostrar un caso de autorización, cancelación o estado no permitido; no debe cambiar información.
+- [ ] Explicar el formulario, las funciones principales, las librerías y el diagrama sin leer código palabra por palabra.
+- [ ] Hacer una modificación pequeña y explicar el resultado (por ejemplo un texto, un límite válido o un campo).
 
-1. Solicitar enlace para una cuenta de prueba y abrir el correo en el entorno SMTP elegido.
-2. Probar contraseñas que no coincidan y una demasiado corta.
-3. Cambiar la contraseña: la anterior falla y la nueva permite iniciar sesión.
-4. Mostrar que una sesión previa deja de funcionar y el enlace no se puede reutilizar.
-5. Explicar token aleatorio, hash del token, vencimiento, bcrypt y transacción. No son lo mismo: el token autoriza una recuperación, bcrypt protege la contraseña.
+## Ensayo individual de 15–20 minutos
 
-Verificación realizada con HTTP y MySQL reales y transporte de correo simulado: solicitud, cuenta inexistente, hash, validaciones, vencimiento, reemplazo de enlace, cambio, revocación de sesiones, reutilización rechazada, login viejo/nuevo, dos cambios simultáneos, fallo SMTP y falta de configuración. La entrega a un buzón real queda pendiente de configurar SMTP.
+2 minutos: ubicar backend/client y tu componente. 5 minutos: seguir una petición propia. 4 minutos: explicar modelo y validaciones. 4 minutos: demostrar éxito/error/cancelación. 3 minutos: responder las preguntas anteriores y los conceptos comunes. No memorizar respuestas sobre funciones que no revisaste.
 
-Los porcentajes del reparto anterior corresponden al corte previo: esta ampliación no está incluida en ese cálculo.
+## Archivos compartidos y continuidad
+
+`backend/index.js` monta las rutas y sirve React; `backend/config/db.js` conecta Sequelize; `backend/models/index.js` relaciona modelos; `client/src/App.jsx` decide navegación y sesión. La base de estos archivos se revisa entre todos. Compartir un archivo no significa que cada persona deba defender todas sus ramas internas: ubicá tu método y seguí sus llamadas.
+
+El reparto final sustituye las estimaciones de carga del corte 75. Cada integrante tiene un paquete completo y la misma lista de comprobaciones; no son porcentajes medidos de autoría ni horas reales.

@@ -1,42 +1,44 @@
-# Simón Castellani · próximo avance
+# Simón Castellani · guía de la entrega final
 
-**Tarea nueva:** Edición de consumos y alimentos.
+**Responsabilidad:** Perfil, contraseñas y definición de roles.
 
-**Estado: pendiente de trabajo y verificación individual.** No es una declaración de que ya lo programaste. Se conserva tu responsabilidad de base del 50 % y se añade un recorrido concreto del incremento.
+Conservás perfil, eliminación de cuenta y edición de consumos. Sumás cambio de contraseña, eliminación administrativa de usuarios y creación/modificación de roles.
 
-## Qué tenés que hacer ahora
+Este documento asigna estudio, revisión y defensa. No certifica autoría pasada. Antes de exponer, completá las comprobaciones de tu recorrido.
 
-Abrir un consumo existente, editar alimento/cantidad/fecha y guardar por PUT. Editar o quitar alimentos sin perder otros campos; revisar las copias con Paulo. Comprobar que cambia el total del día y se mantiene el id.
+## Primero: base común que puede preguntar el profesor
 
-## Mapa de tu avance
+Leé [BASE-COMUN.md](../docs/BASE-COMUN.md). Son conceptos breves que todos deben entender: carpetas, login, Bcrypt, JWT, middleware, CORS, useState y useEffect. El PDF permite preguntas sobre código de compañeros; no hay garantía de que limite la defensa a este módulo. El detalle profundo que sigue es tu parte.
+
+## Mapa de tu módulo
 
 ```mermaid
-flowchart LR
-  U["Formulario o acción: Edición de consumos y alimentos"]
-  U --> E0["PUT /api/consumos/:id"]
-  E0 --> H0["registrarComida"]
-  H0 --> R["Validación, MySQL o Cohere y respuesta"]
-  R --> C["Mostrar resultado y comprobarlo"]
+flowchart TD
+  A["CambiarPassword.jsx: formulario o acción"] --> B["Axios: /api/cuenta/password"]
+  B --> C["Express: sesión y permiso cuando corresponde"]
+  C --> D["usuarios.controller.js: validar y consultar"]
+  D --> E["Sequelize y MySQL; proveedor cuando corresponde"]
+  E --> F["Respuesta HTTP y estado React"]
 ```
 
 ## Tus endpoints y continuidad
 
 | Etapa | Método y ruta | Handler real |
 | --- | --- | --- |
-| Base del 50 % | `GET /api/cuenta` | [verCuenta](../controllers/usuarios.controller.js#L233) |
-| Base del 50 % | `PUT /api/cuenta` | [actualizarDatos](../controllers/usuarios.controller.js#L238) |
-| Base del 50 % | `DELETE /api/cuenta` | [eliminarCuenta](../controllers/usuarios.controller.js#L306) |
-| Avance nuevo | `PUT /api/consumos/:id` | [registrarComida](../controllers/nutricion.controller.js#L340) |
+| Base del 50 % | `GET /api/cuenta` | [verCuenta](../backend/controllers/usuarios.controller.js#L248) |
+| Base del 50 % | `PUT /api/cuenta` | [actualizarDatos](../backend/controllers/usuarios.controller.js#L253) |
+| Base del 50 % | `DELETE /api/cuenta` | [eliminarCuenta](../backend/controllers/usuarios.controller.js#L321) |
+| Avance nuevo | `PUT /api/consumos/:id` | [registrarComida](../backend/controllers/nutricion.controller.js#L370) |
 
 ## Funciones concretas del avance
 
 | Función | Qué parte recorrés |
 | --- | --- |
-| [registrarComida](../controllers/nutricion.controller.js#L340) | Tu rama encuentra el consumo propio por id y lo actualiza. |
-| [cambiarAlimento](../client/src/pages/Nutricion.jsx#L113) | Edita una copia del alimento y reemplaza la posición. |
-| [quitarAlimento](../client/src/pages/Nutricion.jsx#L257) | Quita un alimento de la copia de lista. |
-| [editar](../client/src/pages/Nutricion.jsx#L188) | Tu rama carga consumo y fecha/hora para corrección. |
-| [copiarComidas](../client/src/pages/Nutricion.jsx#L179) | Revisión con Paulo de copia de listas; no atribuye un endpoint de dietas a tu cargo. |
+| [registrarComida](../backend/controllers/nutricion.controller.js#L370) | Tu rama encuentra el consumo propio por id y lo actualiza. |
+| [cambiarAlimento](../client/src/pages/Nutricion.jsx) | Edita una copia del alimento y reemplaza la posición. |
+| [quitarAlimento](../client/src/pages/Nutricion.jsx) | Quita un alimento de la copia de lista. |
+| [editar](../client/src/pages/Nutricion.jsx) | Tu rama carga consumo y fecha/hora para corrección. |
+| [copiarComidas](../client/src/pages/Nutricion.jsx) | Revisión con Paulo de copia de listas; no atribuye un endpoint de dietas a tu cargo. |
 
 Los helpers son funciones internas, no endpoints adicionales. Si una función sirve a POST y PUT o a generación y adaptación, se revisa entre los dos responsables. No hay que duplicarla ni separarla artificialmente para aparentar más código.
 
@@ -106,24 +108,43 @@ Los helpers son funciones internas, no endpoints adicionales. Si una función si
 
 **Cómo mostrarlo.** Cambiar la cantidad de 50 a 100 g y comprobar que el total cambia de 200 a 400 kcal.
 
-## Cuándo está terminado tu bloque
 
-- [ ] Editar 50 a 100 g cambia 200 a 400 kcal conservando id.
-- [ ] Editar/quitar un alimento conserva el resto.
-- [ ] No se puede editar un consumo de otro usuario.
-- [ ] Explicar el recorrido desde el input hasta la respuesta, sin leer el código palabra por palabra.
-- [ ] Registrar qué revisión, cambio o comprobación hiciste realmente; si hay commit, usar la identidad real.
+## Lo que se agrega en el cierre
 
-## Tamaño previsto y trabajo compartido
+`CambiarPassword.jsx/cambiar`: comprueba coincidencia de nueva y repetida, envía actual/nueva a PUT y limpia el usuario de React después del éxito. `cambiarPassword` compara la actual con bcrypt bajo bloqueo de Usuario, cambia el hash y borra Sesion/Recuperacion en la misma transacción. `crearRoles` valida nombre, descripción y lista de permisos reconocidos; crea o modifica el modelo. `modificarRoles` conserva el id. Cliente/Administrador están protegidos. `eliminarUsuario` impide borrarse desde el panel, comprueba que quede un admin activo y elimina la cuenta con cascada; no equivale a bloquear. `actualizarDatos` cifra el teléfono con AES-GCM y solo acepta campos explícitos.
 
-Como referencia, este paquete cubre **10.62 %** de las 1.702 líneas nuevas/reemplazadas del incremento medido. Es cobertura asignada para revisar/trabajar, no un porcentaje de programación ya hecho. No mide dificultad ni tiempo y se reajusta si al trabajar aparece una diferencia de carga.
+### Rutas nuevas que defendés
 
-[Plan y límites del cálculo](../docs/PLAN.md). La meta es cerca de 11 % por persona, con margen; el alcance de entrega puede quedar por encima o por debajo del nombre histórico 75. No se inflan líneas ni se atribuye código intacto como una mejora.
+| Método y ruta | Función | Archivo |
+| --- | --- | --- |
+| `PUT /api/cuenta/password` | `cambiarPassword` | [usuarios.controller.js](../backend/controllers/usuarios.controller.js) |
+| `DELETE /api/admin/usuarios/:id` | `eliminarUsuario` | [admin.controller.js](../backend/controllers/admin.controller.js) |
+| `POST /api/admin/roles` | `crearRoles` | [admin.controller.js](../backend/controllers/admin.controller.js) |
+| `PUT /api/admin/roles/:id` | `modificarRoles` | [admin.controller.js](../backend/controllers/admin.controller.js) |
 
-## Lectura del código
+## Preguntas de defensa con respuesta orientativa
 
-Pantalla React → ruta Express → controlador → Sequelize → MySQL. req.params trae el id; req.query, filtros; req.body, JSON; req.user, la cuenta autenticada. Las consultas deben restringir el propietario. Axios envía pedidos desde React y el JSON recibido está en respuesta.data. Un 204 no tiene JSON.
+**¿Por qué pedir la contraseña actual?** La sesión abierta no demuestra por sí sola que quien está frente a la pantalla puede cambiar el acceso.
 
-El backend usa for tradicional, if/else, async/await y try/catch. En JSX, map dibuja listas. Las transacciones con commit/rollback evitan guardados parciales; el cifrado, hash y sesión conservan cuentas y datos existentes. La clave de Cohere permanece en el servidor. No se reintroducen los temas retirados ni capas de servicios.
+**¿Un permiso ocultando un botón es suficiente?** No. verificarPermiso controla cada endpoint; roles personalizados tienen permisos efectivos y el admin tiene acceso completo.
 
-[Criterio del profesor y diferencias conservadas](../docs/CRITERIO-DEL-PROFESOR.md).
+**¿Por qué no devolver password_hash?** No hace falta para la interfaz y es información de autenticación que debe permanecer en el servidor.
+
+## Práctica equivalente para los nueve
+
+- [ ] Recorrer una acción desde el componente hasta MySQL y volver con la respuesta.
+- [ ] Mostrar un caso correcto con datos de prueba y persistencia comprobada.
+- [ ] Mostrar un caso de datos inválidos y explicar el código HTTP.
+- [ ] Mostrar un caso de autorización, cancelación o estado no permitido; no debe cambiar información.
+- [ ] Explicar el formulario, las funciones principales, las librerías y el diagrama sin leer código palabra por palabra.
+- [ ] Hacer una modificación pequeña y explicar el resultado (por ejemplo un texto, un límite válido o un campo).
+
+## Ensayo individual de 15–20 minutos
+
+2 minutos: ubicar backend/client y tu componente. 5 minutos: seguir una petición propia. 4 minutos: explicar modelo y validaciones. 4 minutos: demostrar éxito/error/cancelación. 3 minutos: responder las preguntas anteriores y los conceptos comunes. No memorizar respuestas sobre funciones que no revisaste.
+
+## Archivos compartidos y continuidad
+
+`backend/index.js` monta las rutas y sirve React; `backend/config/db.js` conecta Sequelize; `backend/models/index.js` relaciona modelos; `client/src/App.jsx` decide navegación y sesión. La base de estos archivos se revisa entre todos. Compartir un archivo no significa que cada persona deba defender todas sus ramas internas: ubicá tu método y seguí sus llamadas.
+
+El reparto final sustituye las estimaciones de carga del corte 75. Cada integrante tiene un paquete completo y la misma lista de comprobaciones; no son porcentajes medidos de autoría ni horas reales.

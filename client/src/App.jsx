@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 import axios from "axios";
 import Confirmar from "./components/Confirmar";
+import Administracion from "./pages/Administracion";
 import Acceso from "./pages/Acceso";
 import Recuperar from "./pages/Recuperar";
 import Cuenta from "./pages/Cuenta";
@@ -99,10 +100,16 @@ export default function App() {
                 {texto}
               </NavLink>
             ))}
+            {(usuario.administrador ||
+              (usuario.permisos && usuario.permisos.length > 0)) && (
+              <NavLink to="/admin">
+                <span>⚙</span>Administración
+              </NavLink>
+            )}
           </nav>
           <div className="nav-pie">
             <strong>{usuario.nombre}</strong>
-            <small>Preentrega · edición 75</small>
+            <small>Entrega final · edición 100</small>
             <button className="secundario" onClick={() => salir()}>
               Cerrar sesión
             </button>
@@ -119,8 +126,32 @@ export default function App() {
           </p>
         )}
         <Routes>
-          <Route path="/recuperar" element={<Recuperar key="solicitar" setUsuario={setUsuario} />} />
-          <Route path="/restablecer" element={<Recuperar key="restablecer" restablecer setUsuario={setUsuario} />} />
+          <Route
+            path="/admin"
+            element={
+              usuario &&
+              (usuario.administrador ||
+                (usuario.permisos && usuario.permisos.length > 0)) ? (
+                <Administracion usuario={usuario} />
+              ) : (
+                <Navigate to="/dashboard" />
+              )
+            }
+          />
+          <Route
+            path="/recuperar"
+            element={<Recuperar key="solicitar" setUsuario={setUsuario} />}
+          />
+          <Route
+            path="/restablecer"
+            element={
+              <Recuperar
+                key="restablecer"
+                restablecer
+                setUsuario={setUsuario}
+              />
+            }
+          />
           <Route
             path="/"
             element={usuario ? <Navigate to="/dashboard" /> : <Inicio />}
