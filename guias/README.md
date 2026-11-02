@@ -77,3 +77,7 @@ La fracción organizativa de cada paquete es **1/9 (11,111… %)**; las nueve su
 | `PUT /api/rutinas/:id` | [Valentín Sued (Sueco)](06-valentin-schueld.md) |
 
 Total: 53 endpoints. Cada uno tiene un responsable principal. Los helpers compartidos se explican en las guías de quienes los utilizan. [Conceptos comunes](../docs/BASE-COMUN.md) · [Manual](../docs/MANUAL-USUARIO.md) · [Requisitos](../docs/REQUISITOS-ENTREGA.md).
+
+### Ampliación de login · 2/11/2026
+
+Gianluca Pizarro conserva registro/login/recuperación y suma la protección por intentos: cinco contraseñas incorrectas bloquean nuevos accesos por 15 minutos. Su mismo MD contiene el diagrama actualizado, los campos persistidos, migración, preguntas y práctica. No se agrega un endpoint ni cambia el alcance funcional reservado entre el 90 % y el 100 %.

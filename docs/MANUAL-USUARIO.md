@@ -78,3 +78,9 @@ El enlace aparece según roles/permisos. El backend comprueba cada operación au
 ## Datos y privacidad de la demostración
 
 Usar datos ficticios. El buzón local permite ver todos los mensajes de esta instalación y está limitado a loopback. No publicar credenciales, backups ni enlaces de recuperación en el repositorio. Los GIF/imágenes de ejercicios no se redistribuyen; el catálogo textual incluye atribución en backend/models/exercises.
+
+## Demasiados intentos de contraseña
+
+Tras cinco contraseñas incorrectas consecutivas, la cuenta no podrá iniciar otra sesión durante 15 minutos. Se muestra el mensaje correspondiente; intentar desde otra pestaña o con otra combinación de mayúsculas del correo no evita el bloqueo. Los intentos durante la espera no extienden el plazo. Después se puede volver a intentar. Si necesitás recuperar el acceso, utilizá Olvidé mi contraseña y un enlace válido del correo.
+
+Este bloqueo temporal no equivale al bloqueo manual del administrador. El manual no se levanta al esperar 15 minutos. Las sesiones abiertas antes de los fallos continúan disponibles; desde Mi cuenta se puede cambiar la contraseña si se conoce la actual, lo que cierra esas sesiones y limpia el bloqueo temporal.

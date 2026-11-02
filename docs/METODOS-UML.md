@@ -1,6 +1,6 @@
-# Métodos de controlador y correspondencia UML
+# Funciones de la entrega y métodos UML
 
-Funciones reales, incluidas las operaciones literales de administración, recuperación e IA. No se usan clases delegadoras. DVH/DVV siguen excluidos por decisión documentada del usuario.
+Se preserva el alcance de esta edición. La protección por intentos corresponde al login y su guía de Gianluca. No se agregan endpoints por esta ampliación.
 
 | Función | Implementación |
 | --- | --- |
@@ -61,7 +61,7 @@ Funciones reales, incluidas las operaciones literales de administración, recupe
 | `calcularPorcentaje` | [progreso.controller.js](../backend/controllers/progreso.controller.js#L9) |
 | `verProgreso` | [progreso.controller.js](../backend/controllers/progreso.controller.js#L25) |
 | `recuperarPassword` | [recuperacion.controller.js](../backend/controllers/recuperacion.controller.js#L9) |
-| `restablecerPassword` | [recuperacion.controller.js](../backend/controllers/recuperacion.controller.js#L84) |
+| `restablecerPassword` | [recuperacion.controller.js](../backend/controllers/recuperacion.controller.js#L80) |
 | `validarEjercicios` | [rutinas.controller.js](../backend/controllers/rutinas.controller.js#L10) |
 | `agregarEjercicio` | [rutinas.controller.js](../backend/controllers/rutinas.controller.js#L114) |
 | `eliminarEjercicio` | [rutinas.controller.js](../backend/controllers/rutinas.controller.js#L132) |
@@ -78,8 +78,9 @@ Funciones reales, incluidas las operaciones literales de administración, recupe
 | `abrirSesion` | [usuarios.controller.js](../backend/controllers/usuarios.controller.js#L40) |
 | `registrarUsuario` | [usuarios.controller.js](../backend/controllers/usuarios.controller.js#L70) |
 | `iniciarSesion` | [usuarios.controller.js](../backend/controllers/usuarios.controller.js#L170) |
-| `cerrarSesion` | [usuarios.controller.js](../backend/controllers/usuarios.controller.js#L223) |
-| `verCuenta` | [usuarios.controller.js](../backend/controllers/usuarios.controller.js#L248) |
-| `actualizarDatos` | [usuarios.controller.js](../backend/controllers/usuarios.controller.js#L253) |
-| `eliminarCuenta` | [usuarios.controller.js](../backend/controllers/usuarios.controller.js#L321) |
-| `cambiarPassword` | [usuarios.controller.js](../backend/controllers/usuarios.controller.js#L368) |
+| `cerrarSesion` | [usuarios.controller.js](../backend/controllers/usuarios.controller.js#L265) |
+| `verCuenta` | [usuarios.controller.js](../backend/controllers/usuarios.controller.js#L290) |
+| `actualizarDatos` | [usuarios.controller.js](../backend/controllers/usuarios.controller.js#L295) |
+| `eliminarCuenta` | [usuarios.controller.js](../backend/controllers/usuarios.controller.js#L363) |
+| `cambiarPassword` | [usuarios.controller.js](../backend/controllers/usuarios.controller.js#L408) |
+| `actualizarProteccionLogin` | [actualizar-login.js](../backend/config/actualizar-login.js) |

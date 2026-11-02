@@ -347,6 +347,9 @@ CREATE TABLE `usuarios` (
   `ultima_conexion` datetime(3) DEFAULT NULL,
   `zona_horaria` varchar(80) NOT NULL DEFAULT 'America/Argentina/Buenos_Aires',
   `consentimiento_ia` tinyint(1) NOT NULL DEFAULT '0',
+  `intentos_fallidos` int NOT NULL DEFAULT '0',
+  `ultimo_intento_fallido` datetime(3) DEFAULT NULL,
+  `bloqueado_hasta` datetime(3) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

@@ -44,3 +44,7 @@ Códigos usados: 200 éxito, 201 creado, 204 sin contenido, 400 datos inválidos
 ## 5. Ejercicio común de cinco minutos
 
 Abrí tu pantalla, señalá su componente, encontrá la llamada Axios y la ruta Express, pasá al controlador y al modelo y mostrale al profesor la respuesta en la interfaz. Explicá qué pasaría con datos de otra cuenta o datos inválidos. Si no sabés una parte, ubicá el archivo correcto y reconocé el límite antes de inventar una explicación.
+
+## Actualización: login protegido por intentos
+
+El responsable es Gianluca. Antes de comparar bcrypt, iniciarSesion verifica el bloqueo temporal en MySQL. Cinco errores bloquean nuevos accesos 15 minutos y producen 429 con Retry-After; un error anterior produce 401. El contador se actualiza bajo transacción y bloqueo de fila. No se confunde con estado=bloqueado, que es una decisión administrativa. Ver la guía de Gianluca para el detalle y diagrama.

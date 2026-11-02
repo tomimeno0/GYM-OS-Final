@@ -34,4 +34,10 @@ Para chat y generación/adaptación de rutinas/dietas, configurar `COHERE_API_KE
 
 [Manual de usuario](docs/MANUAL-USUARIO.md) · [Nueve guías y reparto](guias/README.md) · [Conceptos comunes de defensa](docs/BASE-COMUN.md) · [Requisitos de entrega](docs/REQUISITOS-ENTREGA.md) · [API](docs/API.md) · [Verificación](docs/VERIFICACION.md) · [Guion de presentación](docs/PRESENTACION.md).
 
-«100 %» identifica el alcance funcional final. No es una promesa de nota máxima ni de ausencia total de errores. Se mantienen las exclusiones previas de DVH/DVV, limitadores y controles especiales de origen; esta configuración está preparada para demostración local. No publicar la instancia local con usuarios reales sin revisar despliegue y seguridad. La explicación de diferencias con UML/DER está en el alcance.
+«100 %» identifica el alcance funcional final. No es una promesa de nota máxima ni de ausencia total de errores. Se mantienen las exclusiones previas de DVH/DVV y controles especiales de origen; esta configuración está preparada para demostración local. No publicar la instancia local con usuarios reales sin revisar despliegue y seguridad. La explicación de diferencias con UML/DER está en el alcance.
+
+## Bloqueo temporal del login
+
+Desde el 2/11/2026: cinco contraseñas incorrectas consecutivas bloquean nuevos inicios de sesión de esa cuenta durante 15 minutos. El quinto fallo y las solicitudes durante el bloqueo responden 429 con Retry-After. Un acierto reinicia el contador; 15 minutos sin fallos también reinician su ventana. Los datos se guardan en MySQL y sobreviven a un reinicio. El bloqueo manual del administrador es independiente.
+
+Si ya existía la base, ejecutar `npm run db:actualizar-login` y reiniciar el servidor. La actualización agrega únicamente las tres columnas que falten, sin borrar usuarios; `db:iniciar` también la ejecuta. Una instalación nueva ya crea esos campos. Responsable del recorrido y defensa: Gianluca Pizarro, en su guía individual.

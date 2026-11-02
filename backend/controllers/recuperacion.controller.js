@@ -20,11 +20,9 @@ async function recuperarPassword(req, res) {
     !process.env.SMTP_FROM ||
     !process.env.APP_URL
   ) {
-    return res
-      .status(503)
-      .json({
-        message: "La recuperación por correo todavía no está configurada.",
-      });
+    return res.status(503).json({
+      message: "La recuperación por correo todavía no está configurada.",
+    });
   }
   try {
     const usuario = await Usuario.findOne({
@@ -74,11 +72,9 @@ async function recuperarPassword(req, res) {
         "Si el correo corresponde a una cuenta activa, recibirás un enlace para recuperar tu contraseña.",
     });
   } catch (error) {
-    res
-      .status(503)
-      .json({
-        message: "No se pudo enviar el correo. Intentá nuevamente más tarde.",
-      });
+    res.status(503).json({
+      message: "No se pudo enviar el correo. Intentá nuevamente más tarde.",
+    });
   }
 }
 async function restablecerPassword(req, res) {
@@ -90,12 +86,10 @@ async function restablecerPassword(req, res) {
     password.length < 10 ||
     Buffer.byteLength(password) > 72
   ) {
-    return res
-      .status(400)
-      .json({
-        message:
-          "Revisá el enlace y la contraseña: mínimo 10 caracteres y máximo 72 bytes.",
-      });
+    return res.status(400).json({
+      message:
+        "Revisá el enlace y la contraseña: mínimo 10 caracteres y máximo 72 bytes.",
+    });
   }
   let transaction;
   try {
@@ -108,11 +102,9 @@ async function restablecerPassword(req, res) {
     });
     if (!recuperacion || recuperacion.fecha_expiracion <= new Date()) {
       await transaction.rollback();
-      return res
-        .status(400)
-        .json({
-          message: "El enlace venció o ya fue utilizado. Pedí uno nuevo.",
-        });
+      return res.status(400).json({
+        message: "El enlace venció o ya fue utilizado. Pedí uno nuevo.",
+      });
     }
     const usuario = await Usuario.findOne({
       where: { id: recuperacion.usuario_id, estado: "activo" },
@@ -122,7 +114,15 @@ async function restablecerPassword(req, res) {
       await transaction.rollback();
       return res.status(400).json({ message: "El enlace no es válido." });
     }
-    await usuario.update({ password_hash }, { transaction });
+    await usuario.update(
+      {
+        password_hash,
+        intentos_fallidos: 0,
+        ultimo_intento_fallido: null,
+        bloqueado_hasta: null,
+      },
+      { transaction },
+    );
     await Sesion.destroy({ where: { usuario_id: usuario.id }, transaction });
     await recuperacion.destroy({ transaction });
     await transaction.commit();

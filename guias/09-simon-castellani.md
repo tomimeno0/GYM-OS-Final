@@ -25,9 +25,9 @@ flowchart TD
 
 | Etapa | Método y ruta | Handler real |
 | --- | --- | --- |
-| Base del 50 % | `GET /api/cuenta` | [verCuenta](../backend/controllers/usuarios.controller.js#L248) |
-| Base del 50 % | `PUT /api/cuenta` | [actualizarDatos](../backend/controllers/usuarios.controller.js#L253) |
-| Base del 50 % | `DELETE /api/cuenta` | [eliminarCuenta](../backend/controllers/usuarios.controller.js#L321) |
+| Base del 50 % | `GET /api/cuenta` | [verCuenta](../backend/controllers/usuarios.controller.js#L290) |
+| Base del 50 % | `PUT /api/cuenta` | [actualizarDatos](../backend/controllers/usuarios.controller.js#L295) |
+| Base del 50 % | `DELETE /api/cuenta` | [eliminarCuenta](../backend/controllers/usuarios.controller.js#L363) |
 | Avance nuevo | `PUT /api/consumos/:id` | [registrarComida](../backend/controllers/nutricion.controller.js#L370) |
 
 ## Funciones concretas del avance

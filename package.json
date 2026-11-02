@@ -8,7 +8,8 @@
     "dev": "node --watch backend/index.js",
     "db:iniciar": "node backend/config/inicializar.js",
     "build": "npm run build --prefix client",
-    "admin:crear": "node backend/config/crear-admin.js"
+    "admin:crear": "node backend/config/crear-admin.js",
+    "db:actualizar-login": "node backend/config/actualizar-login.js"
   },
   "dependencies": {
     "bcrypt": "6.0.0",

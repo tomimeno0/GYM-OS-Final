@@ -168,56 +168,98 @@ async function registrarUsuario(req, res) {
   }
 }
 async function iniciarSesion(req, res) {
+  let transaction;
   try {
     const { email, password } = req.body;
     if (
       typeof email !== "string" ||
+      email.length > 150 ||
       typeof password !== "string" ||
       Buffer.byteLength(password) > 72
     ) {
-      return res.status(400).json({
-        message: "Ingresá correo y contraseña.",
-      });
+      return res.status(400).json({ message: "Ingresá correo y contraseña." });
     }
+    transaction = await sequelize.transaction();
     const usuario = await Usuario.findOne({
-      where: {
-        email: email.trim().toLowerCase(),
-        estado: "activo",
-      },
+      where: { email: email.trim().toLowerCase(), estado: "activo" },
+      transaction,
+      lock: transaction.LOCK.UPDATE,
     });
-    if (
-      !usuario ||
-      !(await compararPassword(password, usuario.password_hash))
-    ) {
-      return res.status(401).json({
-        message: "Correo o contraseña incorrectos.",
-      });
+    if (!usuario) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ message: "Correo o contraseña incorrectos." });
     }
-    const transaction = await sequelize.transaction();
-    try {
+    const ahora = new Date();
+    if (usuario.bloqueado_hasta && usuario.bloqueado_hasta > ahora) {
+      const segundos = Math.max(
+        1,
+        Math.ceil((usuario.bloqueado_hasta.getTime() - ahora.getTime()) / 1000),
+      );
+      await transaction.rollback();
+      res.setHeader("Retry-After", String(segundos));
+      return res
+        .status(429)
+        .json({
+          message:
+            "Demasiados intentos incorrectos. Esperá a que termine el bloqueo temporal para volver a ingresar.",
+          retry_after_segundos: segundos,
+        });
+    }
+    let intentos = usuario.intentos_fallidos;
+    if (
+      usuario.bloqueado_hasta ||
+      !usuario.ultimo_intento_fallido ||
+      ahora.getTime() - usuario.ultimo_intento_fallido.getTime() >= 15 * 60000
+    ) {
+      intentos = 0;
+    }
+    if (!(await compararPassword(password, usuario.password_hash))) {
+      intentos++;
+      let bloqueado_hasta = null;
+      if (intentos >= 5)
+        bloqueado_hasta = new Date(ahora.getTime() + 15 * 60000);
       await usuario.update(
         {
-          ultima_conexion: new Date(),
+          intentos_fallidos: intentos,
+          ultimo_intento_fallido: ahora,
+          bloqueado_hasta,
         },
-        {
-          transaction,
-        },
+        { transaction },
       );
-      await abrirSesion(usuario, res, transaction);
-      await registrarEvento(usuario.id, "CU002_LOGIN", "cuentas", transaction);
       await transaction.commit();
-    } catch (errorGuardado) {
-      await transaction.rollback();
-      throw errorGuardado;
+      if (bloqueado_hasta) {
+        res.setHeader("Retry-After", "900");
+        return res
+          .status(429)
+          .json({
+            message:
+              "Se alcanzaron 5 intentos incorrectos. El inicio de sesión queda bloqueado durante 15 minutos.",
+            retry_after_segundos: 900,
+          });
+      }
+      return res
+        .status(401)
+        .json({ message: "Correo o contraseña incorrectos." });
     }
+    await usuario.update(
+      {
+        ultima_conexion: ahora,
+        intentos_fallidos: 0,
+        ultimo_intento_fallido: null,
+        bloqueado_hasta: null,
+      },
+      { transaction },
+    );
+    await abrirSesion(usuario, res, transaction);
+    await registrarEvento(usuario.id, "CU002_LOGIN", "cuentas", transaction);
+    await transaction.commit();
     await cargarRoles(usuario);
-    res.json({
-      user: datosPublicos(usuario),
-    });
+    res.json({ user: datosPublicos(usuario) });
   } catch (error) {
-    res.status(500).json({
-      message: "No se pudo iniciar sesión.",
-    });
+    if (transaction && !transaction.finished) await transaction.rollback();
+    res.status(500).json({ message: "No se pudo iniciar sesión." });
   }
 }
 async function cerrarSesion(req, res) {
@@ -330,12 +372,10 @@ async function eliminarCuenta(req, res) {
       });
     }
     if (req.user.administrador) {
-      return res
-        .status(409)
-        .json({
-          message:
-            "Una cuenta administradora debe ser eliminada desde el panel por otro administrador.",
-        });
+      return res.status(409).json({
+        message:
+          "Una cuenta administradora debe ser eliminada desde el panel por otro administrador.",
+      });
     }
     const transaction = await sequelize.transaction();
     try {
@@ -374,12 +414,10 @@ async function cambiarPassword(req, res) {
     nueva.length < 10 ||
     Buffer.byteLength(nueva) > 72
   ) {
-    return res
-      .status(400)
-      .json({
-        message:
-          "Revisá la contraseña actual y la nueva (10 caracteres como mínimo y hasta 72 bytes).",
-      });
+    return res.status(400).json({
+      message:
+        "Revisá la contraseña actual y la nueva (10 caracteres como mínimo y hasta 72 bytes).",
+    });
   }
   let transaction;
   try {
@@ -395,7 +433,12 @@ async function cambiarPassword(req, res) {
         .json({ message: "La contraseña actual no coincide." });
     }
     await usuario.update(
-      { password_hash: await encriptarIrreversible(nueva) },
+      {
+        password_hash: await encriptarIrreversible(nueva),
+        intentos_fallidos: 0,
+        ultimo_intento_fallido: null,
+        bloqueado_hasta: null,
+      },
       { transaction },
     );
     await Sesion.destroy({ where: { usuario_id: usuario.id }, transaction });

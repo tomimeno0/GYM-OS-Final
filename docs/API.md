@@ -26,3 +26,7 @@ La tabla completa con responsable por método/ruta está en [guias/README.md](..
 | GET /api/admin/bitacora | Sin body | 100 últimos eventos; auditoria:ver. |
 
 Administrador tiene acceso completo. Los permisos personalizados se aplican por endpoint. Un usuario sin la autorización recibe 403, y sin sesión recibe 401. Los nombres y entradas de cada recorrido heredado están en la guía de su responsable.
+
+## POST /api/login · protección por intentos
+
+Se mantiene email/password. Los cuatro primeros fallos responden 401; el quinto inicia bloqueo de 15 minutos y devuelve 429 con Retry-After y retry_after_segundos. Durante el bloqueo también se rechaza la contraseña correcta con 429. Un acceso válido o una recuperación/cambio de contraseña limpia el contador. No equivale al bloqueo administrativo. Ver la guía de Gianluca.

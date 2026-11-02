@@ -28,3 +28,9 @@ Build React/Vite correcto. npm audit de dependencias de ejecución de backend y 
 ## Límites de lo comprobado
 
 Mailpit demuestra SMTP y recepción local; no demuestra entrega a Gmail/Outlook. Esa entrega requiere un remitente real. Cohere puede limitar o fallar fuera de esta prueba. No se probaron producción, concurrencia masiva ni recuperación ante pérdida del volumen. Se mantienen explícitas las exclusiones del alcance y no se certifica que un alumno ya domina el código por haber recibido su guía. Las comprobaciones no garantizan ausencia absoluta de errores.
+
+## Regresión de protección de login · 2/11/2026
+
+Se reincorporó el bloqueo temporal por cuenta, persistido en MySQL. Las pruebas específicas cubren umbral, clave correcta durante bloqueo, vencimiento, ventana inactiva, reinicio del contador tras éxito, correo normalizado, cuentas independientes, intentos simultáneos, recuperación/cambio de contraseña y coexistencia con bloqueo administrativo. Los resultados de esta ampliación se guardan en .local/proteccion-login. No se reinterpretan como una nueva ejecución de todas las pruebas históricas del informe.
+
+Resultado de la ampliación: **36 peticiones HTTP y 12 comprobaciones correctas por versión (72 peticiones entre ambas)**. Se verificó además en los servidores reiniciados y en la interfaz: el quinto fallo del 90 % mostró el aviso de 15 minutos y en el 100 % una contraseña correcta fue rechazada durante el bloqueo. Las capturas propias están en capturas/bloqueo-login.png. La actualización de columnas se ejecutó dos veces sin borrar usuarios.

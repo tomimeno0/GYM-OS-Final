@@ -7,6 +7,7 @@ const {
 async function inicializar() {
   await sequelize.authenticate();
   await sequelize.sync();
+  await require("./actualizar-login").actualizarProteccionLogin();
   const [rol] = await Rol.findOrCreate({
     where: { nombre: "Cliente" },
     defaults: {
@@ -42,7 +43,9 @@ async function inicializar() {
         fecha_asignacion: new Date(),
       });
   }
-  console.log("Base inicializada sin borrar ni alterar tablas existentes.");
+  console.log(
+    "Base inicializada sin borrar datos; protección de login actualizada.",
+  );
 }
 inicializar()
   .catch(() => {

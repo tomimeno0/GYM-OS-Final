@@ -28,6 +28,13 @@ const Usuario = sequelize.define(
       defaultValue: "activo",
     },
     fecha_registro: { type: DataTypes.DATE(3), allowNull: false },
+    intentos_fallidos: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    ultimo_intento_fallido: { type: DataTypes.DATE(3), allowNull: true },
+    bloqueado_hasta: { type: DataTypes.DATE(3), allowNull: true },
     ultima_conexion: { type: DataTypes.DATE(3), allowNull: true },
     zona_horaria: {
       type: DataTypes.STRING(80),

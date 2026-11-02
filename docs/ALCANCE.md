@@ -4,7 +4,7 @@ Se implementan los recorridos funcionales CU001–CU039: cuentas (registro/login
 
 La versión se deriva del repositorio 75 %, que queda intacto. El proyecto completo histórico GYM-OS tampoco se modifica. Backend CommonJS en backend/ y React en client/, sin servicios ni validadores genéricos. Las transacciones se conservan para cambios conjuntos y las autorizaciones se comprueban en middleware.
 
-«100 %» expresa alcance funcional de la entrega, no una evaluación de nota ni autoría. No se promete equivalencia literal con los 39 diagramas en sus controles de integridad: por instrucción previa siguen fuera DVH/DVV, limitadores y comprobaciones especiales de origen/cabecera. Se mantiene Bcrypt, JWT, cookies HttpOnly, filtros de propietario, cifrado AES del teléfono, confirmaciones, validaciones y transacciones. Las columnas dvh están reservadas.
+«100 %» expresa alcance funcional de la entrega, no una evaluación de nota ni autoría. No se promete equivalencia literal con los 39 diagramas en sus controles de integridad: por instrucción previa siguen fuera DVH/DVV y comprobaciones especiales de origen/cabecera. Se mantiene Bcrypt, JWT, cookies HttpOnly, filtros de propietario, cifrado AES del teléfono, confirmaciones, validaciones y transacciones. Las columnas dvh están reservadas.
 
 La IA requiere Cohere, un proveedor externo y consentimiento; no puede garantizarse disponibilidad continua del proveedor. Recuperación puede probarse con SMTP y buzón local Mailpit; entrega a correos externos exige configurar un remitente real. El catálogo textual de ejercicios funciona sin medios de terceros con licencia separada.
 
